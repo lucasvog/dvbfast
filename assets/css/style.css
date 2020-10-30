@@ -1,4 +1,4 @@
-html,body{
+html,body,.container{
   min-height: 100vh;
 }
 @font-face {
@@ -21,16 +21,9 @@ html,body{
   word-wrap: normal;
   white-space: nowrap;
   direction: ltr;
-
-  /* Support for all WebKit browsers. */
   -webkit-font-smoothing: antialiased;
-  /* Support for Safari and Chrome. */
   text-rendering: optimizeLegibility;
-
-  /* Support for Firefox. */
   -moz-osx-font-smoothing: grayscale;
-
-  /* Support for IE. */
   font-feature-settings: 'liga';
 }
 
@@ -52,6 +45,10 @@ html,body{
   font-feature-settings: 'liga';
 }
 
+.halfspacing{
+  width: 100%;
+  height: 1.5rem;
+}
 
 .stationTitle{
   padding: 10px;
@@ -96,12 +93,7 @@ html,body{
 
 .tripIcon{
   background-color: grey;
-  overflow: hidden;
-  border-radius: 20px;
-  padding:2px;
-  padding-left: 8px;
-  padding-right: 8px;
-  margin: 0px auto;
+  
 }
 
 
@@ -117,12 +109,85 @@ html,body{
   padding-left: 15px;
 }
 .footerRow{
-  position: absolute;
-  bottom:0px;
+  /* position: absolute;
+  bottom:0px; */
   width: 100%;
   font-size: 10px;
   text-align: center;
 }
 .footerRow a{
   color: grey;
+}
+.delayed{
+  color:rgb(143, 1, 1);
+}
+.delayedText{
+  color: rgb(143, 1, 1);
+}
+.delayIcon{
+  margin-right: -7px;
+}
+
+.bus{
+ background-color: #005E79;
+ color: white;
+ overflow: hidden;
+  border-radius: 20px;
+  padding:2px;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin: 0px auto;
+}
+
+.faehre{
+  background-color: #00A5DF;
+  color: white;
+  overflow: hidden;
+  border-radius: 20px;
+  padding:2px;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin: 0px auto;
+}
+.sbahn{
+  background-color: #009551;
+  color: white;
+  overflow: hidden;
+  border-radius: 20px;
+  padding:2px;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin: 0px auto;
+  
+}
+.schwebebahn{
+  background-color: #95C11F;
+  color: white;
+  padding:2px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+.strassenbahn{
+  background-color: #DD0B2F;
+  color:white;
+  padding:2px;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+.zug{
+  background-color: #00A15E;
+  color:white;
+  overflow: hidden;
+  border-radius: 5px;
+  padding:2px;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin: 0px auto;
+}
+.taxi{
+  background-color: #FEC500;
+  color:black;
+  padding:2px;
+  padding-left: 8px;
+  padding-right: 8px;
 }

@@ -4,7 +4,8 @@
       "noImplicitAny": true,
       "removeComments": true,
       "outFile": "./assets/js/script.js",
-      "sourceMap": true
+      "sourceMap": true,
+      "lib": [ "ES2015","DOM" ]
     },
     "include": ["src/**/*"],
     "exclude": ["node_modules", "**/*.spec.ts"]

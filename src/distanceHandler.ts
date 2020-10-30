@@ -1,11 +1,12 @@
 
+
 /**
  * Finds the closest stations to a radius in km
  * @param {float} lat1 Latitude in decimal degrees
  * @param {float} long1 Longitude in decimal degrees 
  * @param {number} radius in km to search
  */
-function findCloseStations(lat1:number, long1:number, radius = 0.4) {
+function findCloseStations(lat1:number, long1:number, radius = 0.4):rawDataStationElement[] {
     var results:rawDataStationElement[] = [];
     //@ts-ignore because data is not defined
     for (var elementKey in data) {
