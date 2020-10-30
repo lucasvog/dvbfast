@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+
+</head>
+
+<body>
+    <script src="./assets/js/rawdata.js"></script>
+    <script>
+        async function convert() {
+            var json = JSON.parse(data);
+            //console.log(json);
+            var returnData = [];
+            var subset = json[0];
+            var thisIndex = 0;
+            for (var element of json) {
+                var newElement = {};
+                var name = element["Name ohne Ort"];
+                    newElement.na = name;
+                newElement.num = await getNumber(element["Name mit Ort"]);
+                newElement.lat = element["WGS84_Y"].replaceAll(",", ".");
+                newElement.lon = element["WGS84_X"].replaceAll(",", ".");
+                newElement.l = element["Ort"];
+                console.log(thisIndex,json.length,newElement);
+                if(newElement.num==null||newElement.num==""){
+                    console.error("ERROR WITH NUMBER");
+                }
+                returnData.push(newElement);
+                await sleep(0.2);
+                //break;
+                thisIndex+=1;
+            }
+            document.body.insertAdjacentText("beforeend", JSON.stringify(returnData));
+        }
+        convert();
+
+        async function sleep(seconds){
+            return new Promise(async (resolve, reject) => {
+                setTimeout(()=>{
+                    resolve()
+                },1000*seconds);
+            });
+        }
+        async function getNumber(nameOfStop) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    var data = await postData("https://webapi.vvo-online.de/tr/pointfinder", { query: nameOfStop, stopsOnly: true, regionalOnly: true })
+                    if (data.PointStatus == undefined) {
+                        console.error("ERROR");
+                        console.log(nameOfStop, data);
+                        resolve(null)
+                        return;
+                    }
+
+                    if (data.Points == undefined || data.Points.length < 1) {
+                        console.error("Number ERROR");
+                        console.log(nameOfStop, data);
+                        resolve(null)
+                        return;
+                    }
+                    var points = data.Points;
+                   // console.log(points);
+                    var resultPoint = "";
+                    if(points.length>1){
+                      //  console.log("MORE POINTS")
+                        for(var point of points){
+                            var regex = new RegExp("[^\\|]*\\|[^\\|]*\\|[^\\|]*\\|"+nameOfStop+"\\|.*?", "i");
+                           // console.log(regex)
+                            if(point.match(regex)!==null){
+                               // console.log(point.match(regex));
+                               // console.log("MATCH FOUND");
+                                resultPoint = point;
+                            }
+                        }
+                    }
+                    if(resultPoint===""){
+                        resultPoint = points[0];
+                    }
+                    if (resultPoint == undefined || resultPoint == null||resultPoint ==="") {
+                        console.log("Result ERROR");
+                        console.log(nameOfStop, data);
+                        resolve(null)
+                        return;
+                    }
+                    var pointMatch = resultPoint.match(/^\d+/);
+                    if (pointMatch == null || pointMatch.length < 1) {
+                        console.log("Regex ERROR");
+                        console.log(nameOfStop, data);
+                        resolve(null)
+                        return;
+                    }
+                   // console.log(pointMatch[0]);
+                    resolve(pointMatch[0]);
+                } catch (e) {
+                    console.error(e);
+                    resolve(null)
+                    return;
+                }
+            });
+}
+        // getNumber("Bautzner Straße");
+        // getNumber("Hygiene");
+        // getNumber("Bautzner");
+        async function postData(url = '', data = {}) {
+            return new Promise(async (resolve, reject) => {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    mode: 'cors',
+                    cache: 'no-cache',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    redirect: 'follow',
+                    referrerPolicy: 'no-referrer',
+                    body: JSON.stringify(data)
+                });
+                resolve(response.json()); // parses JSON response into native JavaScript objects
+            });
+
+        }
+
+
+    </script>
+</body>
+
+</html>
