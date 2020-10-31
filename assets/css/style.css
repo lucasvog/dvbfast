@@ -49,6 +49,10 @@ html,body,.container{
   width: 100%;
   height: 1.5rem;
 }
+.spacing{
+  width: 100%;
+  height: 3rem;
+}
 
 .stationTitle{
   padding: 10px;
@@ -83,6 +87,7 @@ html,body,.container{
   border-radius:0 0 2px 2px;
   overflow: auto;
   border-bottom: 1px solid rgba(0,0,0,0.1);
+  min-height: 65px;
 }
 .noOverflow{
   overflow: hidden;
@@ -164,8 +169,9 @@ html,body,.container{
   background-color: #95C11F;
   color: white;
   padding:2px;
-  padding-left: 8px;
-  padding-right: 8px;
+  padding-left: 3px;
+  padding-right: 3px;
+  font-size: 55%;
 }
 .strassenbahn{
   background-color: #DD0B2F;
@@ -190,4 +196,68 @@ html,body,.container{
   padding:2px;
   padding-left: 8px;
   padding-right: 8px;
+}
+.centerText{
+  text-align: center;
+}
+.spinning{
+  -webkit-animation-name: spin;
+  -webkit-animation-duration: 2000ms;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  -moz-animation-name: spin;
+  -moz-animation-duration: 2000ms;
+  -moz-animation-iteration-count: infinite;
+  -moz-animation-timing-function: linear;
+  -ms-animation-name: spin;
+  -ms-animation-duration: 2000ms;
+  -ms-animation-iteration-count: infinite;
+  -ms-animation-timing-function: linear;
+  
+  animation-name: spin;
+  animation-duration: 2000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+@-ms-keyframes spin {
+  from { -ms-transform: rotate(0deg); }
+  to { -ms-transform: rotate(360deg); }
+}
+@-moz-keyframes spin {
+  from { -moz-transform: rotate(0deg); }
+  to { -moz-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+  from { -webkit-transform: rotate(0deg); }
+  to { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+  from {
+      transform:rotate(0deg);
+  }
+  to {
+      transform:rotate(360deg);
+  }
+}
+
+.refreshButton{
+  -webkit-transition: background 1s ease-out;  
+    -moz-transition: background 1s ease-out;  
+    -o-transition: background 1s ease-out;  
+    transition: background 1s ease-out;  
+}
+.switch label input[type="checkbox"]:checked + .lever::after{
+  
+  background-color: #f57c00!important;
+}
+.switch label input[type="checkbox"]:checked + .lever{
+  background-color: #ffa000!important;
+}
+summary{
+  margin: 7px;
+  padding:12px;
+}
+.fixedMenu{
+  position: fixed;
+  top: 0px;
 }

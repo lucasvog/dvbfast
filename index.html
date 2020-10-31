@@ -8,40 +8,78 @@
 </head>
 
 <body>
-  <nav>
+  <nav class=" fixedMenu">
     <div class="nav-wrapper amber">
-      <a href="#!" class="brand-logo grey-text text-darken-4"><span class="desktopPadding"></span>DVBFast</a>
+      <a href="#!" class="brand-logo grey-text text-darken-4 hide-on-med-and-down">
+        <span class="desktopPadding"></span>
+        <span class="">DVBFast</span>
+      </a>
       <a href="#" data-target="mobile-menu" class="sidenav-trigger">
         <i class="material-icons grey-text text-darken-4">menu</i></a>
-      <ul class="right hide-on-med-and-down">
-        <li><a class=" grey-text text-darken-4" href="sass.html">Sass</a></li>
+      <ul class="right">
+        <!--hide-on-med-and-down-->
+
+        <li>
+          <!-- Switch -->
+          <div class="switch white-text">
+            <label class="white-text">
+              Aus
+              <input type="checkbox" checked="true">
+              <span class="lever"></span>
+              An
+            </label>
+          </div>
+        </li>
+
+        <li><a class="waves-effect waves-light btn-flat amber darken-3 white-text refreshButton" id="refreshButton">
+            <i class="material-icons left" id="refreshSpinner">autorenew</i>
+            Aktualisieren</a></li>
       </ul>
     </div>
   </nav>
 
+
   <ul class="sidenav" id="mobile-menu">
-    <li><a href="sass.html">Sass</a></li>
-    <li><a href="badges.html">Components</a></li>
-    <li><a href="collapsible.html">Javascript</a></li>
-    <li><a href="mobile.html">Mobile</a></li>
+<li><a href="https://github.com/lucasvog/dvbfast" target="_blank"><i class="material-icons grey-text text-darken-4">web</i> Auf Github ansehen</a></li>
+<hr>
   </ul>
 
 
   <div class="container">
-    <div class="row">
-      <div class="s12 m6 l4">
-        <!-- <div class="tripIcon bus">3</div>
-  <div class="tripIcon faehre">3</div>
-  <div class="tripIcon sbahn">3</div>
-  <div class="tripIcon schwebebahn">3</div>
-  <div class="tripIcon strassenbahn">3</div>
-  <div class="tripIcon zug">3</div> -->
-  <div class="halfspacing"></div>
-        <div id="boxcontainer" class="row">
-          
+    <!-- <div class="row">
+      <div class="col s12 m6 l4">
+        <div class="halfspacing"></div>
+        <div class="card">
+          <details>
+            <summary>Einstellungen</summary>
+            <p>Epcot is a theme park at Walt Disney World Resort featuring exciting attractions, international
+              pavilions, award-winning fireworks and seasonal special events.</p>
+          </details>
+        </div>
+      </div> -->
+      <div id="boxcontainer" class="row">
 
 
-            <!-- 
+
+        <!-- <div class="spacing"></div>
+          <div class="row centerText">
+          <div class="preloader-wrapper big active">
+            <div class="spinner-layer spinner-yellow-only">
+              <div class="circle-clipper left">
+                <div class="circle"></div>
+              </div><div class="gap-patch">
+                <div class="circle"></div>
+              </div><div class="circle-clipper right">
+                <div class="circle"></div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+
+
+
+
+        <!-- 
               <div class="col s12 m12 l6">
               <div class="card">
               <div class="stationTitle amber">
@@ -74,12 +112,12 @@
 
 
 
-      
 
-          </div>
-        </div>
+
       </div>
-    </div>
+
+    <!-- </div> -->
+  </div>
 
 
   </div>
@@ -109,14 +147,14 @@
       return response.json(); // parses JSON response into native JavaScript objects
     }
 
-    postData('https://webapi.vvo-online.de/dm', { stopid: 33000135,lim:5 })
+    postData('https://webapi.vvo-online.de/dm', { stopid: 33000135, lim: 5 })
       .then(data => {
         console.log(data); // JSON data parsed by `data.json()` call
       });
   </script>
 
   <div class="footerRow">
-    <a href="impress.html">Impressum</a>
+    <a href="https://lucas-vogel.de/impressum/">Impressum</a>
     <a href="dsgvo.html">Datenschutz</a>
   </div>
 </body>

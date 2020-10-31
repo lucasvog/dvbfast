@@ -84,67 +84,100 @@ function init() {
     });
 }
 init();
+var closeStations = [];
 function initData() {
     return __awaiter(this, void 0, void 0, function () {
-        var position, e_1, closeStations, html, _i, closeStations_1, station, departures, target;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    position = null;
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
-                    return [4, getPosition()];
-                case 2:
-                    position = _a.sent();
-                    console.log("GE", position);
-                    return [3, 4];
-                case 3:
-                    e_1 = _a.sent();
-                    showPush("Bitte lassen Sie die Standorterkennung zu, damit Stationen in der Nähe erkannt werden können.");
-                    return [2];
-                case 4:
-                    if (position == null) {
-                        showPush("Standort kann nicht bestimmt werden.");
-                        return [2];
-                    }
-                    closeStations = findCloseStations(position.coords.latitude, position.coords.longitude);
-                    if (closeStations == undefined || closeStations == null) {
-                        showPush("Stationen in der konntent nicht gefunden werden.");
-                        return [2];
-                    }
-                    if (closeStations.length <= 0) {
-                        showPush("Keine Stationen in dem Radius gefunden.");
-                        return [2];
-                    }
-                    console.log(closeStations);
-                    html = "";
-                    _i = 0, closeStations_1 = closeStations;
-                    _a.label = 5;
-                case 5:
-                    if (!(_i < closeStations_1.length)) return [3, 8];
-                    station = closeStations_1[_i];
-                    return [4, getDeparturesOfStation(station)];
-                case 6:
-                    departures = _a.sent();
-                    if (departures == undefined || departures == null) {
-                        showPush("Fehler beim Laden der nächsten Verbindungen.");
-                        return [2];
-                    }
-                    html += generateBox(station, departures);
-                    _a.label = 7;
-                case 7:
-                    _i++;
-                    return [3, 5];
-                case 8:
-                    target = document.getElementById("boxcontainer");
-                    if (target == null) {
-                        showPush("Interner Fehler.");
-                        return [2];
-                    }
-                    target.innerHTML = html;
-                    return [2];
-            }
+            return [2];
+        });
+    });
+}
+function getCloseStations() {
+    return __awaiter(this, void 0, void 0, function () {
+        var _this = this;
+        return __generator(this, function (_a) {
+            return [2, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
+                    var position, e_1, closeStations;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                position = null;
+                                _a.label = 1;
+                            case 1:
+                                _a.trys.push([1, 3, , 4]);
+                                return [4, getPosition()];
+                            case 2:
+                                position = _a.sent();
+                                console.log("GE", position);
+                                return [3, 4];
+                            case 3:
+                                e_1 = _a.sent();
+                                showPush("Bitte lassen Sie die Standorterkennung zu, damit Stationen in der Nähe erkannt werden können.");
+                                return [2];
+                            case 4:
+                                if (position == null) {
+                                    showPush("Standort kann nicht bestimmt werden.");
+                                    return [2];
+                                }
+                                closeStations = findCloseStations(position.coords.latitude, position.coords.longitude);
+                                if (closeStations == undefined || closeStations == null) {
+                                    showPush("Stationen in der konntent nicht gefunden werden.");
+                                    return [2];
+                                }
+                                if (closeStations.length <= 0) {
+                                    showPush("Keine Stationen in dem Radius gefunden.");
+                                    return [2];
+                                }
+                                console.log(closeStations);
+                                resolve(closeStations);
+                                return [2];
+                        }
+                    });
+                }); })];
+        });
+    });
+}
+function updateHTMLWithDepartures() {
+    return __awaiter(this, void 0, void 0, function () {
+        var _this = this;
+        return __generator(this, function (_a) {
+            return [2, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
+                    var html, _i, closeStations_1, station, departures, target;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                html = "";
+                                _i = 0, closeStations_1 = closeStations;
+                                _a.label = 1;
+                            case 1:
+                                if (!(_i < closeStations_1.length)) return [3, 4];
+                                station = closeStations_1[_i];
+                                return [4, getDeparturesOfStation(station)];
+                            case 2:
+                                departures = _a.sent();
+                                if (departures == undefined || departures == null) {
+                                    showPush("Fehler beim Laden der nächsten Verbindungen.");
+                                    resolve(false);
+                                    return [2];
+                                }
+                                html += generateBox(station, departures);
+                                _a.label = 3;
+                            case 3:
+                                _i++;
+                                return [3, 1];
+                            case 4:
+                                target = document.getElementById("boxcontainer");
+                                if (target == null) {
+                                    showPush("Interner Fehler.");
+                                    resolve(false);
+                                    return [2];
+                                }
+                                target.innerHTML = html;
+                                resolve(true);
+                                return [2];
+                        }
+                    });
+                }); })];
         });
     });
 }
@@ -211,6 +244,9 @@ function calculateLineClassName(departure) {
             returnClassValue = "sbahn";
             break;
         case "Seil-/Schwebebahn":
+            returnClassValue = "schwebebahn";
+            break;
+        case "Cableway":
             returnClassValue = "schwebebahn";
             break;
         case "Straßenbahn":
@@ -392,6 +428,63 @@ function post(url, data) {
             }
         });
     });
+}
+var currentRefreshState = 0;
+var isCurrentlyLoading = false;
+var intervallTimeInSeconds = 15;
+var refreshIntervall = setInterval(function () {
+    if (currentRefreshState > intervallTimeInSeconds || isCurrentlyLoading == true) {
+        currentRefreshState = 0;
+    }
+    else {
+        currentRefreshState += 1;
+    }
+    var progress = currentRefreshState / intervallTimeInSeconds;
+    if (progress >= 1) {
+    }
+    updateRefreshButtonProgress(progress);
+}, 1000);
+function refreshInfos() {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    isCurrentlyLoading = true;
+                    setSpinnerState("on");
+                    return [4, initData()];
+                case 1:
+                    _a.sent();
+                    setSpinnerState("off");
+                    isCurrentlyLoading = false;
+                    return [2];
+            }
+        });
+    });
+}
+function setSpinnerState(state) {
+    var spinner = document.getElementById("refreshSpinner");
+    if (state == "on") {
+        spinner.classList.add("spinning");
+    }
+    else {
+        spinner.classList.remove("spinning");
+    }
+}
+function updateRefreshButtonProgress(progress) {
+    console.log("updating", progress);
+    var refreshbutton = document.getElementById("refreshButton");
+    if (progress >= 1 || progress <= 0) {
+        refreshbutton.setAttribute("style", "");
+    }
+    else {
+        var progressCSS = generateProgressGradientString(progress);
+        refreshbutton.setAttribute("style", progressCSS);
+    }
+}
+function generateProgressGradientString(progress) {
+    var progressInPercent = progress * 100;
+    var html = "background: linear-gradient(90deg, #ff8f00 0%, #f57c00 " + progressInPercent + "%, #ff8f00 " + progressInPercent + "%);";
+    return html;
 }
 var departureEndpoint = 'https://webapi.vvo-online.de/dm';
 function getDeparturesOfStation(station) {

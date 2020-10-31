@@ -84,35 +84,38 @@ function calculateLineClassName(departure:Departure){
     
     switch(mot) {
         case "Fähre":
-          returnClassValue="faehre"
+          returnClassValue="faehre";
           break;
           case "Ferry":
-          returnClassValue="faehre"
+          returnClassValue="faehre";
           break;
           case "S-Bahn":
-            returnClassValue="sbahn"
+            returnClassValue="sbahn";
             break;
             case "SuburbanRailway":
-            returnClassValue="sbahn"
+            returnClassValue="sbahn";
             break;
             
             case "Seil-/Schwebebahn":
-          returnClassValue="schwebebahn"
+          returnClassValue="schwebebahn";
           break;
+          case "Cableway":
+              returnClassValue = "schwebebahn";
+              break;
           case "Straßenbahn":
-          returnClassValue="strassenbahn"
+          returnClassValue="strassenbahn";
           break;
           case "Tram":
-          returnClassValue="strassenbahn"
+          returnClassValue="strassenbahn";
           break;
           case "Zug":
-          returnClassValue="zug"
+          returnClassValue="zug";
           break;
           case "Train":
-          returnClassValue="zug"
+          returnClassValue="zug";
           break;
           case "HailedSharedTaxi":
-          returnClassValue = "taxi"
+          returnClassValue = "taxi";
           break;
       } 
       console.log("MOT",mot,returnClassValue)
