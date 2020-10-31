@@ -51,10 +51,7 @@ async function getCloseStations(): Promise<rawDataStationElement[]> {
             showPush("Standort kann nicht bestimmt werden.");
             return;
         }
-        //@ts-ignore
-        showPush("Data length "+data.length);
         var closeStations: rawDataStationElement[] = findCloseStations(position.coords.latitude, position.coords.longitude);
-        showPush("Data length "+closeStations.length);
         //var closeStations:rawDataStationElement[] = findCloseStations(51.053533, 13.816152); //Seilbahnen testen
         //var closeStations:rawDataStationElement[] = findCloseStations(51.039867, 13.733739); Hauptbahnhof
         if (closeStations == undefined || closeStations == null) {
@@ -73,12 +70,15 @@ async function getCloseStations(): Promise<rawDataStationElement[]> {
  * Updates the HTML with the departures boxes
  */
 async function updateHTMLWithDepartures() {
-    showPush("Updating HTML");
     return new Promise(async (resolve, reject) => {
         var html = "";
         for (const station of closeStations) {
             showPush("station"+station.na);
+            try{
             var departures = await getDeparturesOfStation(station);
+            }catch(e){
+
+            }
             if (departures == undefined || departures == null) {
                 showPush("Fehler beim Laden der nächsten Verbindungen.");
                 resolve(false);

@@ -32,6 +32,7 @@ async function getDeparturesOfStation(station: rawDataStationElement): Promise<D
         try {
             var departures: DepartureContainer = await post(departureEndpoint, { stopid: stationNumber, lim: 5 })
         } catch (e) {
+            showPush("Fehler beim Abfragen der Informationen über eine Station.")
             reject(e);
         }
         resolve(departures);

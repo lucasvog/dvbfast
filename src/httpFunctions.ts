@@ -6,6 +6,7 @@
  * @returns Data in JSON format
  */
 async function post(url = '', data = {}) {
+  try{
   const response = await fetch(url, {
     method: 'POST',
     mode: 'cors',
@@ -19,4 +20,8 @@ async function post(url = '', data = {}) {
     body: JSON.stringify(data)
   });
   return response.json();
+}catch(e){
+  showPush(e.code);
+  return null;
+}
 }

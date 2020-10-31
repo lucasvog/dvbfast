@@ -149,9 +149,7 @@ function getCloseStations() {
                                     showPush("Standort kann nicht bestimmt werden.");
                                     return [2];
                                 }
-                                showPush("Data length " + data.length);
                                 closeStations = findCloseStations(position.coords.latitude, position.coords.longitude);
-                                showPush("Data length " + closeStations.length);
                                 if (closeStations == undefined || closeStations == null) {
                                     showPush("Stationen in der konntent nicht gefunden werden.");
                                     return [2];
@@ -172,9 +170,8 @@ function updateHTMLWithDepartures() {
     return __awaiter(this, void 0, void 0, function () {
         var _this = this;
         return __generator(this, function (_a) {
-            showPush("Updating HTML");
             return [2, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
-                    var html, _i, closeStations_1, station, departures, target;
+                    var html, _i, closeStations_1, station, departures, e_2, target;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
@@ -182,23 +179,31 @@ function updateHTMLWithDepartures() {
                                 _i = 0, closeStations_1 = closeStations;
                                 _a.label = 1;
                             case 1:
-                                if (!(_i < closeStations_1.length)) return [3, 4];
+                                if (!(_i < closeStations_1.length)) return [3, 7];
                                 station = closeStations_1[_i];
                                 showPush("station" + station.na);
-                                return [4, getDeparturesOfStation(station)];
+                                _a.label = 2;
                             case 2:
+                                _a.trys.push([2, 4, , 5]);
+                                return [4, getDeparturesOfStation(station)];
+                            case 3:
                                 departures = _a.sent();
+                                return [3, 5];
+                            case 4:
+                                e_2 = _a.sent();
+                                return [3, 5];
+                            case 5:
                                 if (departures == undefined || departures == null) {
                                     showPush("Fehler beim Laden der nächsten Verbindungen.");
                                     resolve(false);
                                     return [2];
                                 }
                                 html += generateBox(station, departures);
-                                _a.label = 3;
-                            case 3:
+                                _a.label = 6;
+                            case 6:
                                 _i++;
                                 return [3, 1];
-                            case 4:
+                            case 7:
                                 showPush(html.substr(0, 100).replace("<", " "));
                                 target = document.getElementById("boxcontainer");
                                 if (target == null) {
@@ -404,7 +409,6 @@ function getPosition() {
                     }, 30000);
                     navigator.geolocation.getCurrentPosition(function (pos) { return __awaiter(_this, void 0, void 0, function () {
                         return __generator(this, function (_a) {
-                            showPush("got Position " + pos.coords.latitude.toString() + " " + pos.coords.longitude.toString());
                             clearTimeout(timeout);
                             resolve(pos);
                             return [2];
@@ -422,24 +426,31 @@ function post(url, data) {
     if (url === void 0) { url = ''; }
     if (data === void 0) { data = {}; }
     return __awaiter(this, void 0, void 0, function () {
-        var response;
+        var response, e_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4, fetch(url, {
-                        method: 'POST',
-                        mode: 'cors',
-                        cache: 'no-cache',
-                        credentials: 'same-origin',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        redirect: 'follow',
-                        referrerPolicy: 'no-referrer',
-                        body: JSON.stringify(data)
-                    })];
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4, fetch(url, {
+                            method: 'POST',
+                            mode: 'cors',
+                            cache: 'no-cache',
+                            credentials: 'same-origin',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            redirect: 'follow',
+                            referrerPolicy: 'no-referrer',
+                            body: JSON.stringify(data)
+                        })];
                 case 1:
                     response = _a.sent();
                     return [2, response.json()];
+                case 2:
+                    e_3 = _a.sent();
+                    showPush(e_3.code);
+                    return [2, null];
+                case 3: return [2];
             }
         });
     });
@@ -536,7 +547,7 @@ function getDeparturesOfStation(station) {
         var _this = this;
         return __generator(this, function (_a) {
             return [2, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
-                    var stationNumber, departures, e_2;
+                    var stationNumber, departures, e_4;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
@@ -549,8 +560,9 @@ function getDeparturesOfStation(station) {
                                 departures = _a.sent();
                                 return [3, 4];
                             case 3:
-                                e_2 = _a.sent();
-                                reject(e_2);
+                                e_4 = _a.sent();
+                                showPush("Fehler beim Abfragen der Informationen über eine Station.");
+                                reject(e_4);
                                 return [3, 4];
                             case 4:
                                 resolve(departures);
