@@ -149,7 +149,9 @@ function getCloseStations() {
                                     showPush("Standort kann nicht bestimmt werden.");
                                     return [2];
                                 }
+                                showPush("Data length " + data.length);
                                 closeStations = findCloseStations(position.coords.latitude, position.coords.longitude);
+                                showPush("Data length " + closeStations.length);
                                 if (closeStations == undefined || closeStations == null) {
                                     showPush("Stationen in der konntent nicht gefunden werden.");
                                     return [2];
@@ -170,6 +172,7 @@ function updateHTMLWithDepartures() {
     return __awaiter(this, void 0, void 0, function () {
         var _this = this;
         return __generator(this, function (_a) {
+            showPush("Updating HTML");
             return [2, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
                     var html, _i, closeStations_1, station, departures, target;
                     return __generator(this, function (_a) {
@@ -181,6 +184,7 @@ function updateHTMLWithDepartures() {
                             case 1:
                                 if (!(_i < closeStations_1.length)) return [3, 4];
                                 station = closeStations_1[_i];
+                                showPush("station" + station.na);
                                 return [4, getDeparturesOfStation(station)];
                             case 2:
                                 departures = _a.sent();
@@ -195,6 +199,7 @@ function updateHTMLWithDepartures() {
                                 _i++;
                                 return [3, 1];
                             case 4:
+                                showPush(html.substr(0, 100).replace("<", " "));
                                 target = document.getElementById("boxcontainer");
                                 if (target == null) {
                                     showPush("Interner Fehler.");
