@@ -77,10 +77,17 @@ function degree2rad(deg) {
 function init() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            setAutoRefreshSwitchState("off");
-            M.AutoInit();
-            initData();
-            return [2];
+            switch (_a.label) {
+                case 0:
+                    setAutoRefreshSwitchState("off");
+                    M.AutoInit();
+                    return [4, initData()];
+                case 1:
+                    _a.sent();
+                    setAutoRefreshSwitchState("on");
+                    initialLoad = false;
+                    return [2];
+            }
         });
     });
 }
@@ -142,7 +149,6 @@ function getCloseStations() {
                                     showPush("Standort kann nicht bestimmt werden.");
                                     return [2];
                                 }
-                                setAutoRefreshSwitchState("on");
                                 closeStations = findCloseStations(position.coords.latitude, position.coords.longitude);
                                 if (closeStations == undefined || closeStations == null) {
                                     showPush("Stationen in der konntent nicht gefunden werden.");
@@ -393,6 +399,7 @@ function getPosition() {
                     }, 30000);
                     navigator.geolocation.getCurrentPosition(function (pos) { return __awaiter(_this, void 0, void 0, function () {
                         return __generator(this, function (_a) {
+                            showPush("got Position " + pos.coords.latitude.toString() + " " + pos.coords.longitude.toString());
                             clearTimeout(timeout);
                             resolve(pos);
                             return [2];
@@ -436,6 +443,7 @@ var intervallTimeInSeconds = 20;
 var isDisabled = false;
 var isCurrentlyLoading = false;
 var currentRefreshState = 0;
+var initialLoad = true;
 var refreshIntervall = setInterval(function () {
     if (getIfAutorefreshIsEnabled() == false) {
         isDisabled = true;
@@ -443,7 +451,7 @@ var refreshIntervall = setInterval(function () {
     else {
         isDisabled = false;
     }
-    if (currentRefreshState > intervallTimeInSeconds || isCurrentlyLoading == true || isDisabled == true) {
+    if (currentRefreshState > intervallTimeInSeconds || isCurrentlyLoading == true || isDisabled == true || initialLoad == true) {
         currentRefreshState = 0;
     }
     else {

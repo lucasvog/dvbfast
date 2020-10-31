@@ -6,7 +6,9 @@ async function init() {
     setAutoRefreshSwitchState("off")
     //@ts-ignore
     M.AutoInit();
-    initData();
+    await initData();
+    setAutoRefreshSwitchState("on");
+    initialLoad = false;
 }
 init();
 
@@ -49,7 +51,7 @@ async function getCloseStations(): Promise<rawDataStationElement[]> {
             showPush("Standort kann nicht bestimmt werden.");
             return;
         }
-        setAutoRefreshSwitchState("on");
+        
         var closeStations: rawDataStationElement[] = findCloseStations(position.coords.latitude, position.coords.longitude);
         //var closeStations:rawDataStationElement[] = findCloseStations(51.053533, 13.816152); //Seilbahnen testen
         //var closeStations:rawDataStationElement[] = findCloseStations(51.039867, 13.733739); Hauptbahnhof

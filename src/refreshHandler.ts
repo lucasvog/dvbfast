@@ -4,6 +4,7 @@ var intervallTimeInSeconds = 20; //time in seconds for the auto-refresh
 var isDisabled = false;
 var isCurrentlyLoading = false;
 var currentRefreshState = 0; 
+var initialLoad = true;//initial loading of the website
 
 /**
  * Intervall that handles the progress of the auto refresh.
@@ -14,7 +15,7 @@ var refreshIntervall = setInterval(() => {
     } else {
         isDisabled = false;
     }
-    if (currentRefreshState > intervallTimeInSeconds || isCurrentlyLoading == true || isDisabled == true) {
+    if (currentRefreshState > intervallTimeInSeconds || isCurrentlyLoading == true || isDisabled == true||initialLoad==true) {
         currentRefreshState = 0;
     } else {
         currentRefreshState += 1;

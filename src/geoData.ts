@@ -26,6 +26,7 @@ async function getPosition():Promise<any> {
             return;
         }, 30000)//after X seconds: timeout
         navigator.geolocation.getCurrentPosition(async (pos: any) => {
+            showPush("got Position "+pos.coords.latitude.toString()+" "+ pos.coords.longitude.toString());
             clearTimeout(timeout);
             resolve(pos);
             return;
