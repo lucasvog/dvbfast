@@ -260,4 +260,8 @@ summary{
 .fixedMenu{
   position: fixed;
   top: 0px;
+  z-index: 990;
+}
+.invisible{
+  opacity: 0;
 }

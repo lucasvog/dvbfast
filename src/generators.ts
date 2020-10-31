@@ -118,7 +118,6 @@ function calculateLineClassName(departure:Departure){
           returnClassValue = "taxi";
           break;
       } 
-      console.log("MOT",mot,returnClassValue)
 return returnClassValue;
 
 // ["Fähre","Fähre"],
@@ -139,7 +138,6 @@ function calculateDepartureStatus(departure:Departure){
     var toEarlyStart = '<i class="material-icons-smaller onTime">warning</i><span class="delayedText">';
     var unit = " min."
     var sheduledIcon ='<i class="material-icons-smaller delayIcon">wysiwygy</i>'
-    console.log(departure);
     if(departure.State==undefined){
         return unknown;
     }

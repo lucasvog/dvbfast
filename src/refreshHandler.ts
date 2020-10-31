@@ -4,27 +4,47 @@
 
 var currentRefreshState = 0;
 var isCurrentlyLoading = false;
-var intervallTimeInSeconds = 15
+var intervallTimeInSeconds = 20
+var isDisabled = false;
+
 var refreshIntervall = setInterval(()=>{
-    if(currentRefreshState>intervallTimeInSeconds||isCurrentlyLoading==true){
+    if(getIfAutorefreshIsEnabled()==false){
+        isDisabled=true;
+    }else{
+        isDisabled = false;
+    }
+    if(currentRefreshState>intervallTimeInSeconds||isCurrentlyLoading==true||isDisabled==true){
         currentRefreshState=0;
     }else{
         currentRefreshState+=1;
     }
     var progress = currentRefreshState/intervallTimeInSeconds;
     if(progress>=1){
-     //   refreshInfos();
+        refreshInfos();
 }
     updateRefreshButtonProgress(progress);
 },1000)
 
 
 
+function getIfAutorefreshIsEnabled(){
+    var disabledButton:any = document.getElementById("autorefreshSwitch");
+    return disabledButton.checked;
+}
+
+
 async function refreshInfos(){
+    if(isCurrentlyLoading==true){
+        return;
+    }
+    var thisTimeout = setTimeout(()=>{
+        isCurrentlyLoading=false;
+    },120000);//two minutes
     isCurrentlyLoading=true;
     setSpinnerState("on");
     await initData();
     setSpinnerState("off");
+    clearTimeout(thisTimeout);
     isCurrentlyLoading = false;
 }
 
@@ -42,7 +62,6 @@ function setSpinnerState(state:"on"|"off"){
  * @param progress in a range from 0 to 1
  */
 function updateRefreshButtonProgress(progress:number){
-    console.log("updating",progress)
     var refreshbutton = document.getElementById("refreshButton");
     if(progress>=1||progress<=0){
         refreshbutton.setAttribute("style","");

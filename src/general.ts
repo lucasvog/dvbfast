@@ -10,11 +10,11 @@ init();
 var closeStations:rawDataStationElement[]= [];
 
 async function initData(){
-    // return new Promise(async (resolve,reject)=>{
-    // closeStations = await getCloseStations()
-    // await updateHTMLWithDepartures();
-    //resolve(true);
-   // });
+    return new Promise(async (resolve,reject)=>{
+    closeStations = await getCloseStations()
+    await updateHTMLWithDepartures();
+    resolve(true);
+   });
 }
 
 async function getCloseStations():Promise<rawDataStationElement[]>{

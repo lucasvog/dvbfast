@@ -8,7 +8,7 @@
 </head>
 
 <body>
-  <nav class=" fixedMenu">
+  <nav class="fixedMenu">
     <div class="nav-wrapper amber">
       <a href="#!" class="brand-logo grey-text text-darken-4 hide-on-med-and-down">
         <span class="desktopPadding"></span>
@@ -24,14 +24,14 @@
           <div class="switch white-text">
             <label class="white-text">
               Aus
-              <input type="checkbox" checked="true">
+              <input id="autorefreshSwitch" type="checkbox" checked="true">
               <span class="lever"></span>
               An
             </label>
           </div>
         </li>
 
-        <li><a class="waves-effect waves-light btn-flat amber darken-3 white-text refreshButton" id="refreshButton">
+        <li><a class="waves-effect waves-light btn-flat amber darken-3 white-text refreshButton" id="refreshButton" onclick="refreshInfos()">
             <i class="material-icons left" id="refreshSpinner">autorenew</i>
             Aktualisieren</a></li>
       </ul>
@@ -43,8 +43,11 @@
 <li><a href="https://github.com/lucasvog/dvbfast" target="_blank"><i class="material-icons grey-text text-darken-4">web</i> Auf Github ansehen</a></li>
 <hr>
   </ul>
-
-
+  <nav class="invisible">
+    <div class="nav-wrapper amber">
+    </div>
+    </nav>
+<div class="halfspacing"></div>
   <div class="container">
     <!-- <div class="row">
       <div class="col s12 m6 l4">

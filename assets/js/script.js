@@ -87,8 +87,22 @@ init();
 var closeStations = [];
 function initData() {
     return __awaiter(this, void 0, void 0, function () {
+        var _this = this;
         return __generator(this, function (_a) {
-            return [2];
+            return [2, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4, getCloseStations()];
+                            case 1:
+                                closeStations = _a.sent();
+                                return [4, updateHTMLWithDepartures()];
+                            case 2:
+                                _a.sent();
+                                resolve(true);
+                                return [2];
+                        }
+                    });
+                }); })];
         });
     });
 }
@@ -265,7 +279,6 @@ function calculateLineClassName(departure) {
             returnClassValue = "taxi";
             break;
     }
-    console.log("MOT", mot, returnClassValue);
     return returnClassValue;
 }
 function calculateDepartureStatus(departure) {
@@ -276,7 +289,6 @@ function calculateDepartureStatus(departure) {
     var toEarlyStart = '<i class="material-icons-smaller onTime">warning</i><span class="delayedText">';
     var unit = " min.";
     var sheduledIcon = '<i class="material-icons-smaller delayIcon">wysiwygy</i>';
-    console.log(departure);
     if (departure.State == undefined) {
         return unknown;
     }
@@ -431,9 +443,16 @@ function post(url, data) {
 }
 var currentRefreshState = 0;
 var isCurrentlyLoading = false;
-var intervallTimeInSeconds = 15;
+var intervallTimeInSeconds = 20;
+var isDisabled = false;
 var refreshIntervall = setInterval(function () {
-    if (currentRefreshState > intervallTimeInSeconds || isCurrentlyLoading == true) {
+    if (getIfAutorefreshIsEnabled() == false) {
+        isDisabled = true;
+    }
+    else {
+        isDisabled = false;
+    }
+    if (currentRefreshState > intervallTimeInSeconds || isCurrentlyLoading == true || isDisabled == true) {
         currentRefreshState = 0;
     }
     else {
@@ -441,20 +460,33 @@ var refreshIntervall = setInterval(function () {
     }
     var progress = currentRefreshState / intervallTimeInSeconds;
     if (progress >= 1) {
+        refreshInfos();
     }
     updateRefreshButtonProgress(progress);
 }, 1000);
+function getIfAutorefreshIsEnabled() {
+    var disabledButton = document.getElementById("autorefreshSwitch");
+    return disabledButton.checked;
+}
 function refreshInfos() {
     return __awaiter(this, void 0, void 0, function () {
+        var thisTimeout;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    if (isCurrentlyLoading == true) {
+                        return [2];
+                    }
+                    thisTimeout = setTimeout(function () {
+                        isCurrentlyLoading = false;
+                    }, 120000);
                     isCurrentlyLoading = true;
                     setSpinnerState("on");
                     return [4, initData()];
                 case 1:
                     _a.sent();
                     setSpinnerState("off");
+                    clearTimeout(thisTimeout);
                     isCurrentlyLoading = false;
                     return [2];
             }
@@ -471,7 +503,6 @@ function setSpinnerState(state) {
     }
 }
 function updateRefreshButtonProgress(progress) {
-    console.log("updating", progress);
     var refreshbutton = document.getElementById("refreshButton");
     if (progress >= 1 || progress <= 0) {
         refreshbutton.setAttribute("style", "");
