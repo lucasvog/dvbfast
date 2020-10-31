@@ -1,4 +1,4 @@
-var departureLimit = 6;
+const departureLimit = 6;
 
 
 /**
@@ -8,17 +8,17 @@ var departureLimit = 6;
  * @returns HTML
  */
 function generateBox(station: rawDataStationElement, departuresContainer: DepartureContainer): string {
-    var title = generateTitleHTML(station);
-    var departuresHTML = "";
-    var departures = departuresContainer.Departures;
-    var thisDepartureLimit = 0;
+    const title = generateTitleHTML(station);
+    let departuresHTML = "";
+    const departures = departuresContainer.Departures;
+    let thisDepartureLimit = 0;
     for (const departure of departures) {
         if (thisDepartureLimit < departureLimit) {
             departuresHTML += generateDepartureHTML(departure);
         }
         thisDepartureLimit += 1;
     }
-    var html = `
+    let html = `
     <div class="col s12 m12 l6">
     <div class="card">
         ${title}
@@ -34,10 +34,10 @@ function generateBox(station: rawDataStationElement, departuresContainer: Depart
  * @param station station to generate html from
  */
 function generateTitleHTML(station: rawDataStationElement) {
-    var title = station.na;
-    var distance = generateDistanceString(station.distance) || "unbekannt";
-    var time = "null"
-    var html = `
+    const title = station.na;
+    const distance = generateDistanceString(station.distance) || "unbekannt";
+    const time = "null"
+    let html = `
             <div class="stationTitle amber">
             <div class="row noBottomMargin verticalContainer">
             <div class="col s12 m12 l12 overflowHorizontalScroll">
@@ -55,19 +55,19 @@ function generateTitleHTML(station: rawDataStationElement) {
  * @returns html
  */
 function generateDepartureHTML(departure: Departure): string {
-    var lineNumber = departure.LineName;
-    var target = departure.Direction;
-    var unparsedTimeStamp = departure.RealTime || departure.ScheduledTime;
-    var time = generateClockTimeStringFromUnparsedUTCTimestamp(unparsedTimeStamp);
-    var steig = "";
-    var iconClass = calculateLineClassName(departure);
+    const lineNumber = departure.LineName;
+    const target = departure.Direction;
+    const unparsedTimeStamp = departure.RealTime || departure.ScheduledTime;
+    const time = generateClockTimeStringFromUnparsedUTCTimestamp(unparsedTimeStamp);
+    let steig = "";
+    const iconClass = calculateLineClassName(departure);
     try {
         steig = "Steig " + departure.Platform.Name;
     } catch (e) {
         steig = ""
     }
-    var departureStatus = calculateDepartureStatus(departure);
-    var html = `
+    const departureStatus = calculateDepartureStatus(departure);
+    let html = `
     <div class="tripContainer verticalContainer">
       <div class="row noMargin">
       <div class="col s2 m2 l2">
@@ -95,11 +95,11 @@ function generateDepartureHTML(departure: Departure): string {
  * @returns class-name
  */
 function calculateLineClassName(departure: Departure): string {
-    var returnClassValue = "bus";
+    let returnClassValue = "bus";
     if (departure.Mot == undefined || departure.Mot == null || departure.Mot == "") {
         return returnClassValue;
     }
-    var mot = departure.Mot;
+    const mot = departure.Mot;
 
     switch (mot) {
         case "Fähre":
@@ -145,31 +145,32 @@ function calculateLineClassName(departure: Departure): string {
  * @param departure departure-Element from the VVO-API
  */
 function calculateDepartureStatus(departure: Departure) {
-    var onTime = '<i class="material-icons-smaller onTime">check_circle</i>pünktlich';
-    var unknown = '';
-    var delayStart = '<i class="material-icons-smaller delayed">warning</i><span class="delayedText">';
-    var delayEnd = "</span>"
-    var toEarlyStart = '<i class="material-icons-smaller onTime">warning</i><span class="delayedText">';
-    var unit = " min."
-    var sheduledIcon = '<i class="material-icons-smaller delayIcon">wysiwygy</i>'
+    const onTime = '<i class="material-icons-smaller onTime">check_circle</i>pünktlich';
+    const unknown = '';
+    const delayStart = '<i class="material-icons-smaller delayed">warning</i><span class="delayedText">';
+    const delayEnd = "</span>"
+    const toEarlyStart = '<i class="material-icons-smaller onTime">warning</i><span class="delayedText">';
+    const unit = " min."
+    const sheduledIcon = '<i class="material-icons-smaller delayIcon">wysiwygy</i>'
     if (departure.State == undefined) {
         return unknown;
     }
     if (departure.State === "InTime") {
         return onTime;
     }
-    var realTime = generateUTCStringFromUnparsedTimestamp(departure.RealTime || departure.ScheduledTime);
-    var scheduledTime = generateUTCStringFromUnparsedTimestamp(departure.ScheduledTime);
+    const realTime = generateUTCStringFromUnparsedTimestamp(departure.RealTime || departure.ScheduledTime);
+    const scheduledTime = generateUTCStringFromUnparsedTimestamp(departure.ScheduledTime);
     if (realTime == null || scheduledTime == null) {
         return unknown;
     }
     if (realTime !== scheduledTime) {
-        var timeDifference = realTime - scheduledTime;
-        var minutes = generateMinutesFromMilliseconds(timeDifference);
+        let timeDifference = realTime - scheduledTime;
+        let minutes = generateMinutesFromMilliseconds(timeDifference);
         if (timeDifference > 0) {//later
-            var sheduledTimeString = generateHoursAndMinutesFromUtcDateString(scheduledTime);
+            const sheduledTimeString = generateHoursAndMinutesFromUtcDateString(scheduledTime);
             return delayStart + "+" + Math.abs(minutes).toString() + unit + " " + sheduledIcon + sheduledTimeString + " Uhr" + delayEnd;
         } else {//earlier
+            const sheduledTimeString = generateHoursAndMinutesFromUtcDateString(scheduledTime);
             return toEarlyStart + "+" + Math.abs(minutes).toString() + unit + " " + sheduledIcon + sheduledTimeString + " Uhr" + delayEnd;
         }
 
@@ -184,7 +185,7 @@ function generateMinutesFromMilliseconds(milliseconds: number | string): number 
     if (typeof milliseconds == "string") {
         milliseconds = parseInt(milliseconds);
     }
-    var minutes = milliseconds / 1000 / 60;
+    const minutes = milliseconds / 1000 / 60;
     return minutes;
 }
 
@@ -197,7 +198,7 @@ function generateClockTimeStringFromUnparsedUTCTimestamp(unparsedTimestamp: stri
     if (unparsedTimestamp == undefined || unparsedTimestamp == null || unparsedTimestamp === "") {
         return "XX:XX"
     }
-    var dvbDate = generateUTCStringFromUnparsedTimestamp(unparsedTimestamp);
+    const dvbDate = generateUTCStringFromUnparsedTimestamp(unparsedTimestamp);
     if (dvbDate == null) {
         return "XX:XX"
     }
@@ -212,8 +213,8 @@ function generateClockTimeStringFromUnparsedUTCTimestamp(unparsedTimestamp: stri
  */
 function generateHoursAndMinutesFromUtcDateString(date: number): string {
     try {
-        var thisDate = new Date(date);
-        var returnString = "";
+        let thisDate = new Date(date);
+        let returnString = "";
         returnString += ('0' + thisDate.getHours()).substr(-2);
         returnString += ":"
         returnString += ('0' + thisDate.getMinutes()).substr(-2);
@@ -229,12 +230,12 @@ function generateHoursAndMinutesFromUtcDateString(date: number): string {
  * @param utcString String of unparsed DVB-String format, like /Date(1604085840000-0000)/
  */
 function generateUTCStringFromUnparsedTimestamp(utcString: string): number | null {
-    var dvbDateRegex = /\/Date\((\d+)-\d*\)\//g;
-    var dateMatch = dvbDateRegex.exec(utcString);
+    const dvbDateRegex = /\/Date\((\d+)-\d*\)\//g;
+    const dateMatch = dvbDateRegex.exec(utcString);
     if (dateMatch == null || dateMatch.length != 2) {
         return null;
     }
-    var returnValue = dateMatch[1]
+    const returnValue = dateMatch[1]
     return parseInt(returnValue);
 }
 
@@ -243,14 +244,12 @@ function generateUTCStringFromUnparsedTimestamp(utcString: string): number | nul
  * @param distance in non-rounded km format 
  */
 function generateDistanceString(distance: number): string {
-    var returnString = "";
     try {
-        //var roundedDistance = distance*1000;//Meters
         if (distance > 1) {
-            var roundedDistanceString = (Math.round(distance * 100) / 100).toString().substr(0, 4);
+            const roundedDistanceString = (Math.round(distance * 100) / 100).toString().substr(0, 4);
             return roundedDistanceString + "km";
         } else {
-            var roundedDistanceString = (Math.round(distance * 1000)).toString();
+            const roundedDistanceString = (Math.round(distance * 1000)).toString();
 
             return roundedDistanceString + "m";
         }

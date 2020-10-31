@@ -1,15 +1,15 @@
 
-var intervallTimeInSeconds = 20; //time in seconds for the auto-refresh
+const intervallTimeInSeconds = 20; //time in seconds for the auto-refresh
 
-var isDisabled = false;
-var isCurrentlyLoading = false;
-var currentRefreshState = 0; 
-var initialLoad = true;//initial loading of the website
+let isDisabled = false;
+let isCurrentlyLoading = false;
+let currentRefreshState = 0; 
+let initialLoad = true;//initial loading of the website
 
 /**
  * Intervall that handles the progress of the auto refresh.
  */
-var refreshIntervall = setInterval(() => {
+let refreshIntervall = setInterval(() => {
     if (getIfAutorefreshIsEnabled() == false) {
         isDisabled = true;
     } else {
@@ -20,7 +20,7 @@ var refreshIntervall = setInterval(() => {
     } else {
         currentRefreshState += 1;
     }
-    var progress = currentRefreshState / intervallTimeInSeconds;
+    const progress = currentRefreshState / intervallTimeInSeconds;
     if (progress >= 1) {
         refreshInfos();
     }
@@ -32,7 +32,7 @@ var refreshIntervall = setInterval(() => {
  * returns the switch state of auto refresh
  */
 function getIfAutorefreshIsEnabled() {
-    var disabledButton: any = document.getElementById("autorefreshSwitch");
+    let disabledButton: any = document.getElementById("autorefreshSwitch");
     return disabledButton.checked;
 }
 
@@ -43,7 +43,7 @@ async function refreshInfos() {
     if (isCurrentlyLoading == true) {
         return;
     }
-    var thisTimeout = setTimeout(() => {
+    let thisTimeout = setTimeout(() => {
         isCurrentlyLoading = false;
     }, 120000);//two minutes
     isCurrentlyLoading = true;
@@ -59,7 +59,7 @@ async function refreshInfos() {
  * @param state state of the spinner
  */
 function setSpinnerState(state: "on" | "off") {
-    var spinner = document.getElementById("refreshSpinner");
+    let spinner = document.getElementById("refreshSpinner");
     if (state == "on") {
         spinner.classList.add("spinning");
     } else {
@@ -72,7 +72,7 @@ function setSpinnerState(state: "on" | "off") {
  * @param state state of the switch
  */
 function setAutoRefreshSwitchState(state:"on"|"off"){
-   var thisSwitch:any = document.getElementById("autorefreshSwitch");
+   let thisSwitch:any = document.getElementById("autorefreshSwitch");
 if(state=="on"){
     thisSwitch.checked  =true;
 }else{
@@ -85,11 +85,11 @@ if(state=="on"){
  * @param progress in a range from 0 to 1
  */
 function updateRefreshButtonProgress(progress: number) {
-    var refreshbutton = document.getElementById("refreshButton");
+    let refreshbutton = document.getElementById("refreshButton");
     if (progress >= 1 || progress <= 0) {
         refreshbutton.setAttribute("style", "");
     } else {
-        var progressCSS = generateProgressGradientString(progress);
+        const progressCSS = generateProgressGradientString(progress);
         refreshbutton.setAttribute("style", progressCSS);
     }
 }
@@ -99,7 +99,7 @@ function updateRefreshButtonProgress(progress: number) {
  * @param progress in a range from 0 to 1
  */
 function generateProgressGradientString(progress: number) {
-    var progressInPercent = progress * 100;
-    var html = `background: linear-gradient(90deg, #ff8f00 0%, #f57c00 ${progressInPercent}%, #ff8f00 ${progressInPercent}%);`;
+    const progressInPercent = progress * 100;
+    let html = `background: linear-gradient(90deg, #ff8f00 0%, #f57c00 ${progressInPercent}%, #ff8f00 ${progressInPercent}%);`;
     return html;
 }

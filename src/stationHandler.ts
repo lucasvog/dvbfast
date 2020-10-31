@@ -1,5 +1,5 @@
 
-var departureEndpoint = 'https://webapi.vvo-online.de/dm';
+const departureEndpoint = 'https://webapi.vvo-online.de/dm';
 
 interface DepartureContainer {
     Departures: Departure[],
@@ -28,13 +28,14 @@ interface Departure {
  */
 async function getDeparturesOfStation(station: rawDataStationElement): Promise<DepartureContainer | null> {
     return new Promise(async (resolve, reject) => {
-        var stationNumber = station.num;
+        const stationNumber = station.num;
         try {
-            var departures: DepartureContainer = await post(departureEndpoint, { stopid: stationNumber, lim: 5 })
+            const departures: DepartureContainer = await post(departureEndpoint, { stopid: stationNumber, lim: 5 })
+            resolve(departures);
         } catch (e) {
             showPush("Fehler beim Abfragen der Informationen über eine Station.")
             reject(e);
         }
-        resolve(departures);
+        
     });
 }

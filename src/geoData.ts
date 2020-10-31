@@ -9,7 +9,7 @@ interface rawDataStationElement {
 /**
  * Options for geolocation-API
  */
-var options = {
+const options = {
     enableHighAccuracy: true,
     timeout: 5000,
     maximumAge: 0
@@ -21,12 +21,13 @@ var options = {
  */
 async function getPosition():Promise<any> {
     return new Promise((resolve, reject) => {
-        var timeout = setTimeout(() => {
-            reject("timeout");
+        let timeout = setTimeout(() => {
+            reject({code:3,message:"timeout"});
             return;
         }, 30000)//after X seconds: timeout
+        console.log("start getting")
+        try{
         navigator.geolocation.getCurrentPosition(async (pos: any) => {
-            //showPush("got Position "+pos.coords.latitude.toString()+" "+ pos.coords.longitude.toString());
             clearTimeout(timeout);
             resolve(pos);
             return;
@@ -36,5 +37,9 @@ async function getPosition():Promise<any> {
                 reject(error);
                 return;
             }, options);
+        }catch(e){
+            console.log(e);
+        }
     });
+
 }

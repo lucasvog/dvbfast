@@ -10,8 +10,6 @@ async function post(url = '', data = {}) {
   const response = await fetch(url, {
     method: 'POST',
     mode: 'cors',
-    cache: 'no-cache',
-    credentials: 'same-origin',
     headers: {
       'Content-Type': 'application/json'
     },
@@ -21,7 +19,37 @@ async function post(url = '', data = {}) {
   });
   return response.json();
 }catch(e){
-  showPush(e.code);
   return null;
 }
+}
+
+/**
+ * HTTP GET method
+ * @param {String} url url of the request
+ * @returns promise that resolves to the result of the request, otherwise null.
+ */
+async function get(url:string):Promise<any> {
+  return new Promise(function (resolve, reject) {
+    try {
+      fetch(url, {
+        method: "GET",
+      })
+        .then(response => {
+          //console.log(response);
+          if (response.status == 200) {
+            let contentType = response.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+              return response.json()
+            } else {
+              resolve(null);
+            }
+          } else {
+            resolve(null);
+          }
+        })
+        .then(json => resolve(json));
+    } catch (e) {
+      resolve(null);
+    }
+  });
 }

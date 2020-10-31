@@ -6,6 +6,7 @@ async function init() {
     setAutoRefreshSwitchState("off")
     //@ts-ignore
     M.AutoInit();
+    await initStationsData();
     await initData();
     setAutoRefreshSwitchState("on");
     initialLoad = false;
@@ -13,7 +14,7 @@ async function init() {
 init();
 
 //"cache" of close Stations.
-var closeStations: rawDataStationElement[] = [];
+let closeStations: rawDataStationElement[] = [];
 
 /**
  * inits all data, by retrieving the closest stations and updating the HTML of the document
@@ -31,7 +32,7 @@ async function initData(): Promise<true> {
  */
 async function getCloseStations(): Promise<rawDataStationElement[]> {
     return new Promise(async (resolve, reject) => {
-        var position: any = null;
+        let position: any = null;
         try {
             position = await getPosition();
         } catch (e) {
@@ -51,9 +52,9 @@ async function getCloseStations(): Promise<rawDataStationElement[]> {
             showPush("Standort kann nicht bestimmt werden.");
             return;
         }
-        var closeStations: rawDataStationElement[] = findCloseStations(position.coords.latitude, position.coords.longitude);
-        //var closeStations:rawDataStationElement[] = findCloseStations(51.053533, 13.816152); //Seilbahnen testen
-        //var closeStations:rawDataStationElement[] = findCloseStations(51.039867, 13.733739); Hauptbahnhof
+        const closeStations: rawDataStationElement[] = findCloseStations(position.coords.latitude, position.coords.longitude);
+        //const closeStations:rawDataStationElement[] = findCloseStations(51.053533, 13.816152); //Seilbahnen testen
+        //const closeStations:rawDataStationElement[] = findCloseStations(51.039867, 13.733739); Hauptbahnhof
         if (closeStations == undefined || closeStations == null) {
             showPush("Stationen in der konntent nicht gefunden werden.");
             return;
@@ -71,14 +72,9 @@ async function getCloseStations(): Promise<rawDataStationElement[]> {
  */
 async function updateHTMLWithDepartures() {
     return new Promise(async (resolve, reject) => {
-        var html = "";
+        let html = "";
         for (const station of closeStations) {
-            showPush("station"+station.na);
-            try{
-            var departures = await getDeparturesOfStation(station);
-            }catch(e){
-
-            }
+            const departures = await getDeparturesOfStation(station);
             if (departures == undefined || departures == null) {
                 showPush("Fehler beim Laden der nächsten Verbindungen.");
                 resolve(false);
@@ -87,8 +83,7 @@ async function updateHTMLWithDepartures() {
             html += generateBox(station, departures);
 
         }
-        showPush(html.substr(0,100).replace("<"," "));
-        var target = document.getElementById("boxcontainer");
+        let target = document.getElementById("boxcontainer");
         if (target == null) {
             showPush("Interner Fehler.");
             resolve(false);

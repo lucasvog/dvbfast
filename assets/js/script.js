@@ -34,12 +34,86 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var data = [];
+function initStationsData() {
+    return __awaiter(this, void 0, void 0, function () {
+        var _this = this;
+        return __generator(this, function (_a) {
+            return [2, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
+                    var localData, cacheResult;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                localData = readStorage("data", true);
+                                if (!(localData == undefined || localData == null)) return [3, 2];
+                                return [4, asynchronouslyUpdateCache()];
+                            case 1:
+                                cacheResult = _a.sent();
+                                resolve(cacheResult);
+                                return [2];
+                            case 2:
+                                data = localData;
+                                asynchronouslyUpdateCache();
+                                resolve(true);
+                                return [2];
+                        }
+                    });
+                }); })];
+        });
+    });
+}
+function asynchronouslyUpdateCache() {
+    return __awaiter(this, void 0, void 0, function () {
+        var _this = this;
+        return __generator(this, function (_a) {
+            return [2, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
+                    var thisData;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0: return [4, get("./assets/data/data.json")];
+                            case 1:
+                                thisData = _a.sent();
+                                if (thisData == undefined || thisData == null) {
+                                    showPush("Es ist ein Fehler beim Laden der Haltestellen aufgetreten.");
+                                    resolve(false);
+                                    return [2];
+                                }
+                                data = thisData;
+                                setStorage("data", thisData, true);
+                                resolve(true);
+                                return [2];
+                        }
+                    });
+                }); })];
+        });
+    });
+}
+function setStorage(key, value, isJSON) {
+    if (isJSON === void 0) { isJSON = false; }
+    if (isJSON) {
+        value = JSON.stringify(value);
+    }
+    localStorage.setItem(key, value);
+}
+function readStorage(key, isJSON) {
+    if (isJSON === void 0) { isJSON = false; }
+    try {
+        var value = localStorage.getItem(key);
+        if (isJSON == true) {
+            value = JSON.parse(value);
+        }
+        return value;
+    }
+    catch (e) {
+        return null;
+    }
+}
 function findCloseStations(lat1, long1, radius) {
     if (radius === void 0) { radius = 0.4; }
     var results = [];
     for (var elementKey in data) {
         var element = data[elementKey];
-        var distance = findDistance(lat1, long1, element.lat, element.lon);
+        var distance = findDistance(lat1, long1, parseFloat(element.lat), parseFloat(element.lon));
         if (distance < radius) {
             element.distance = distance;
             results.push(element);
@@ -81,8 +155,11 @@ function init() {
                 case 0:
                     setAutoRefreshSwitchState("off");
                     M.AutoInit();
-                    return [4, initData()];
+                    return [4, initStationsData()];
                 case 1:
+                    _a.sent();
+                    return [4, initData()];
+                case 2:
                     _a.sent();
                     setAutoRefreshSwitchState("on");
                     initialLoad = false;
@@ -171,7 +248,7 @@ function updateHTMLWithDepartures() {
         var _this = this;
         return __generator(this, function (_a) {
             return [2, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
-                    var html, _i, closeStations_1, station, departures, e_2, target;
+                    var html, _i, closeStations_1, station, departures, target;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
@@ -179,32 +256,22 @@ function updateHTMLWithDepartures() {
                                 _i = 0, closeStations_1 = closeStations;
                                 _a.label = 1;
                             case 1:
-                                if (!(_i < closeStations_1.length)) return [3, 7];
+                                if (!(_i < closeStations_1.length)) return [3, 4];
                                 station = closeStations_1[_i];
-                                showPush("station" + station.na);
-                                _a.label = 2;
-                            case 2:
-                                _a.trys.push([2, 4, , 5]);
                                 return [4, getDeparturesOfStation(station)];
-                            case 3:
+                            case 2:
                                 departures = _a.sent();
-                                return [3, 5];
-                            case 4:
-                                e_2 = _a.sent();
-                                return [3, 5];
-                            case 5:
                                 if (departures == undefined || departures == null) {
                                     showPush("Fehler beim Laden der nächsten Verbindungen.");
                                     resolve(false);
                                     return [2];
                                 }
                                 html += generateBox(station, departures);
-                                _a.label = 6;
-                            case 6:
+                                _a.label = 3;
+                            case 3:
                                 _i++;
                                 return [3, 1];
-                            case 7:
-                                showPush(html.substr(0, 100).replace("<", " "));
+                            case 4:
                                 target = document.getElementById("boxcontainer");
                                 if (target == null) {
                                     showPush("Interner Fehler.");
@@ -334,6 +401,7 @@ function calculateDepartureStatus(departure) {
             return delayStart + "+" + Math.abs(minutes).toString() + unit + " " + sheduledIcon + sheduledTimeString + " Uhr" + delayEnd;
         }
         else {
+            var sheduledTimeString = generateHoursAndMinutesFromUtcDateString(scheduledTime);
             return toEarlyStart + "+" + Math.abs(minutes).toString() + unit + " " + sheduledIcon + sheduledTimeString + " Uhr" + delayEnd;
         }
     }
@@ -378,7 +446,6 @@ function generateUTCStringFromUnparsedTimestamp(utcString) {
     return parseInt(returnValue);
 }
 function generateDistanceString(distance) {
-    var returnString = "";
     try {
         if (distance > 1) {
             var roundedDistanceString = (Math.round(distance * 100) / 100).toString().substr(0, 4);
@@ -404,20 +471,26 @@ function getPosition() {
         return __generator(this, function (_a) {
             return [2, new Promise(function (resolve, reject) {
                     var timeout = setTimeout(function () {
-                        reject("timeout");
+                        reject({ code: 3, message: "timeout" });
                         return;
                     }, 30000);
-                    navigator.geolocation.getCurrentPosition(function (pos) { return __awaiter(_this, void 0, void 0, function () {
-                        return __generator(this, function (_a) {
+                    console.log("start getting");
+                    try {
+                        navigator.geolocation.getCurrentPosition(function (pos) { return __awaiter(_this, void 0, void 0, function () {
+                            return __generator(this, function (_a) {
+                                clearTimeout(timeout);
+                                resolve(pos);
+                                return [2];
+                            });
+                        }); }, function (error) {
                             clearTimeout(timeout);
-                            resolve(pos);
-                            return [2];
-                        });
-                    }); }, function (error) {
-                        clearTimeout(timeout);
-                        reject(error);
-                        return;
-                    }, options);
+                            reject(error);
+                            return;
+                        }, options);
+                    }
+                    catch (e) {
+                        console.log(e);
+                    }
                 })];
         });
     });
@@ -426,7 +499,7 @@ function post(url, data) {
     if (url === void 0) { url = ''; }
     if (data === void 0) { data = {}; }
     return __awaiter(this, void 0, void 0, function () {
-        var response, e_3;
+        var response, e_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -434,8 +507,6 @@ function post(url, data) {
                     return [4, fetch(url, {
                             method: 'POST',
                             mode: 'cors',
-                            cache: 'no-cache',
-                            credentials: 'same-origin',
                             headers: {
                                 'Content-Type': 'application/json'
                             },
@@ -447,11 +518,41 @@ function post(url, data) {
                     response = _a.sent();
                     return [2, response.json()];
                 case 2:
-                    e_3 = _a.sent();
-                    showPush(e_3.code);
+                    e_2 = _a.sent();
                     return [2, null];
                 case 3: return [2];
             }
+        });
+    });
+}
+function get(url) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2, new Promise(function (resolve, reject) {
+                    try {
+                        fetch(url, {
+                            method: "GET"
+                        })
+                            .then(function (response) {
+                            if (response.status == 200) {
+                                var contentType = response.headers.get("content-type");
+                                if (contentType && contentType.indexOf("application/json") !== -1) {
+                                    return response.json();
+                                }
+                                else {
+                                    resolve(null);
+                                }
+                            }
+                            else {
+                                resolve(null);
+                            }
+                        })
+                            .then(function (json) { return resolve(json); });
+                    }
+                    catch (e) {
+                        resolve(null);
+                    }
+                })];
         });
     });
 }
@@ -547,7 +648,7 @@ function getDeparturesOfStation(station) {
         var _this = this;
         return __generator(this, function (_a) {
             return [2, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
-                    var stationNumber, departures, e_4;
+                    var stationNumber, departures, e_3;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
@@ -558,15 +659,14 @@ function getDeparturesOfStation(station) {
                                 return [4, post(departureEndpoint, { stopid: stationNumber, lim: 5 })];
                             case 2:
                                 departures = _a.sent();
+                                resolve(departures);
                                 return [3, 4];
                             case 3:
-                                e_4 = _a.sent();
+                                e_3 = _a.sent();
                                 showPush("Fehler beim Abfragen der Informationen über eine Station.");
-                                reject(e_4);
+                                reject(e_3);
                                 return [3, 4];
-                            case 4:
-                                resolve(departures);
-                                return [2];
+                            case 4: return [2];
                         }
                     });
                 }); })];
