@@ -25,14 +25,6 @@ async function getPosition() {
             return;
         }, 30000)//after X seconds: timeout
         navigator.geolocation.getCurrentPosition(async (pos: any) => {
-            console.log(pos);
-            var crd = pos.coords;
-            console.log('Your current position is:');
-            console.log(`Latitude : ${crd.latitude}`);
-            console.log(`Longitude: ${crd.longitude}`);
-            console.log(`More or less ${crd.accuracy} meters.`);
-           // var closeStations = findCloseStations(crd.latitude, crd.longitude);
-            //console.log(closeStations);
             clearTimeout(timeout);
             resolve(pos);
             return;
@@ -56,20 +48,23 @@ async function getPosition() {
  */
 function geosuccess(pos: any) {
     var crd = pos.coords;
-    console.log('Your current position is:');
-    console.log(`Latitude : ${crd.latitude}`);
-    console.log(`Longitude: ${crd.longitude}`);
-    console.log(`More or less ${crd.accuracy} meters.`);
+    // console.log('Your current position is:');
+    // console.log(`Latitude : ${crd.latitude}`);
+    // console.log(`Longitude: ${crd.longitude}`);
+    // console.log(`More or less ${crd.accuracy} meters.`);
     var closeStations = findCloseStations(crd.latitude, crd.longitude);
-    console.log(closeStations);
 }
 
 /**
  * Gets called if an error occured on the geolocation-API
  * @param err geolocation-error
  */
-function geoerror(err: any) {
-    console.warn(`ERROR(${err.code}): ${err.message}`);
+function geoerror(error: any) {
+    console.warn(`ERROR(${error.code}): ${error.message}`);
+    switch(error.code) {
+        case error.PERMISSION_DENIED: alert('User did not share location'); break;
+        case error.POSITION_UNAVAILABLE: alert('Unable to get position'); break;
+        case error.TIMEOUT: alert('Request timed out'); break;
+        default: alert('An error occured'); break;
+    }
 }
-
-

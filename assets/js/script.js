@@ -382,14 +382,7 @@ function getPosition() {
                         return;
                     }, 30000);
                     navigator.geolocation.getCurrentPosition(function (pos) { return __awaiter(_this, void 0, void 0, function () {
-                        var crd;
                         return __generator(this, function (_a) {
-                            console.log(pos);
-                            crd = pos.coords;
-                            console.log('Your current position is:');
-                            console.log("Latitude : " + crd.latitude);
-                            console.log("Longitude: " + crd.longitude);
-                            console.log("More or less " + crd.accuracy + " meters.");
                             clearTimeout(timeout);
                             resolve(pos);
                             return [2];
@@ -405,15 +398,24 @@ function getPosition() {
 }
 function geosuccess(pos) {
     var crd = pos.coords;
-    console.log('Your current position is:');
-    console.log("Latitude : " + crd.latitude);
-    console.log("Longitude: " + crd.longitude);
-    console.log("More or less " + crd.accuracy + " meters.");
     var closeStations = findCloseStations(crd.latitude, crd.longitude);
-    console.log(closeStations);
 }
-function geoerror(err) {
-    console.warn("ERROR(" + err.code + "): " + err.message);
+function geoerror(error) {
+    console.warn("ERROR(" + error.code + "): " + error.message);
+    switch (error.code) {
+        case error.PERMISSION_DENIED:
+            alert('User did not share location');
+            break;
+        case error.POSITION_UNAVAILABLE:
+            alert('Unable to get position');
+            break;
+        case error.TIMEOUT:
+            alert('Request timed out');
+            break;
+        default:
+            alert('An error occured');
+            break;
+    }
 }
 function post(url, data) {
     if (url === void 0) { url = ''; }
