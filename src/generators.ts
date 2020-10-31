@@ -1,58 +1,72 @@
 var departureLimit = 6;
 
-function generateBox(station: rawDataStationElement, departuresContainer: DepartureContainer) {
+
+/**
+ * Generates the HTML for a station including the departures
+ * @param station station for the box
+ * @param departuresContainer departure-element from the VVO API
+ * @returns HTML
+ */
+function generateBox(station: rawDataStationElement, departuresContainer: DepartureContainer): string {
     var title = generateTitleHTML(station);
     var departuresHTML = "";
     var departures = departuresContainer.Departures;
-    var thisDepartureLimit  = 0;
+    var thisDepartureLimit = 0;
     for (const departure of departures) {
-        if(thisDepartureLimit<departureLimit){
-        departuresHTML += generateDepartureHTML(departure);
+        if (thisDepartureLimit < departureLimit) {
+            departuresHTML += generateDepartureHTML(departure);
         }
-        thisDepartureLimit +=1;
+        thisDepartureLimit += 1;
     }
     var html = `
     <div class="col s12 m12 l6">
     <div class="card">
-    ${title}
-    ${departuresHTML}
-  </div>
-  </div>
-  `
+        ${title}
+        ${departuresHTML}
+    </div>
+    </div>`
     return html;
 }
 
 
+/**
+ * Generates the title HTML of a station
+ * @param station station to generate html from
+ */
 function generateTitleHTML(station: rawDataStationElement) {
     var title = station.na;
     var distance = generateDistanceString(station.distance) || "unbekannt";
     var time = "null"
     var html = `
-<div class="stationTitle amber">
-<div class="row noBottomMargin verticalContainer">
-<div class="col s12 m12 l12 overflowHorizontalScroll">
-  <h6 class="noMargin flow-text"><i class="material-icons-smaller grey-text text-darken-4">location_on</i>${title}</h6>
-  <small>Distanz: ${distance}</small>
-</div>
-</div>
-</div>`;
+            <div class="stationTitle amber">
+            <div class="row noBottomMargin verticalContainer">
+            <div class="col s12 m12 l12 overflowHorizontalScroll">
+            <h6 class="noMargin flow-text"><i class="material-icons-smaller grey-text text-darken-4">location_on</i>${title}</h6>
+            <small>Distanz: ${distance}</small>
+            </div>
+            </div>
+            </div>`;
     return html;
 }
 
-function generateDepartureHTML(departure: Departure) {
+/**
+ * Generates all departures as HTML
+ * @param departure departure-element from the VVO API
+ * @returns html
+ */
+function generateDepartureHTML(departure: Departure): string {
     var lineNumber = departure.LineName;
     var target = departure.Direction;
-    var unparsedTimeStamp = departure.RealTime||departure.ScheduledTime;
+    var unparsedTimeStamp = departure.RealTime || departure.ScheduledTime;
     var time = generateClockTimeStringFromUnparsedUTCTimestamp(unparsedTimeStamp);
     var steig = "";
     var iconClass = calculateLineClassName(departure);
-    try{
-        steig = "Steig "+departure.Platform.Name;
-    }catch(e){
+    try {
+        steig = "Steig " + departure.Platform.Name;
+    } catch (e) {
         steig = ""
     }
     var departureStatus = calculateDepartureStatus(departure);
-    //var timeDifference = 
     var html = `
     <div class="tripContainer verticalContainer">
       <div class="row noMargin">
@@ -75,156 +89,173 @@ function generateDepartureHTML(departure: Departure) {
     return html
 }
 
-function calculateLineClassName(departure:Departure){
+/**
+ * Generates a class name from the mode of transport (MOT)
+ * @param departure departure-Element from the VVO-API
+ * @returns class-name
+ */
+function calculateLineClassName(departure: Departure): string {
     var returnClassValue = "bus";
-    if(departure.Mot==undefined||departure.Mot==null||departure.Mot==""){
+    if (departure.Mot == undefined || departure.Mot == null || departure.Mot == "") {
         return returnClassValue;
     }
     var mot = departure.Mot;
-    
-    switch(mot) {
-        case "Fähre":
-          returnClassValue="faehre";
-          break;
-          case "Ferry":
-          returnClassValue="faehre";
-          break;
-          case "S-Bahn":
-            returnClassValue="sbahn";
-            break;
-            case "SuburbanRailway":
-            returnClassValue="sbahn";
-            break;
-            
-            case "Seil-/Schwebebahn":
-          returnClassValue="schwebebahn";
-          break;
-          case "Cableway":
-              returnClassValue = "schwebebahn";
-              break;
-          case "Straßenbahn":
-          returnClassValue="strassenbahn";
-          break;
-          case "Tram":
-          returnClassValue="strassenbahn";
-          break;
-          case "Zug":
-          returnClassValue="zug";
-          break;
-          case "Train":
-          returnClassValue="zug";
-          break;
-          case "HailedSharedTaxi":
-          returnClassValue = "taxi";
-          break;
-      } 
-return returnClassValue;
 
-// ["Fähre","Fähre"],
-// ["Regionalbus","Regionalbus"],
-// ["Rufbus","Rufbus"],
-// ["S-Bahn","S-Bahn"],
-// ["Seil-/Schwebebahn","Seil-/Schwebebahn"],
-// ["Stadtbus","Stadtbus"],
-// ["Straßenbahn","Straßenbahn"],["Zug","Zug"]]
+    switch (mot) {
+        case "Fähre":
+            returnClassValue = "faehre";
+            break;
+        case "Ferry":
+            returnClassValue = "faehre";
+            break;
+        case "S-Bahn":
+            returnClassValue = "sbahn";
+            break;
+        case "SuburbanRailway":
+            returnClassValue = "sbahn";
+            break;
+
+        case "Seil-/Schwebebahn":
+            returnClassValue = "schwebebahn";
+            break;
+        case "Cableway":
+            returnClassValue = "schwebebahn";
+            break;
+        case "Straßenbahn":
+            returnClassValue = "strassenbahn";
+            break;
+        case "Tram":
+            returnClassValue = "strassenbahn";
+            break;
+        case "Zug":
+            returnClassValue = "zug";
+            break;
+        case "Train":
+            returnClassValue = "zug";
+            break;
+        case "HailedSharedTaxi":
+            returnClassValue = "taxi";
+            break;
+    }
+    return returnClassValue;
 }
 
-
-function calculateDepartureStatus(departure:Departure){
+/**
+ * Calculates if the departure is on time, otherwise display the delay and sheduled plan
+ * @param departure departure-Element from the VVO-API
+ */
+function calculateDepartureStatus(departure: Departure) {
     var onTime = '<i class="material-icons-smaller onTime">check_circle</i>pünktlich';
     var unknown = '';
     var delayStart = '<i class="material-icons-smaller delayed">warning</i><span class="delayedText">';
     var delayEnd = "</span>"
     var toEarlyStart = '<i class="material-icons-smaller onTime">warning</i><span class="delayedText">';
     var unit = " min."
-    var sheduledIcon ='<i class="material-icons-smaller delayIcon">wysiwygy</i>'
-    if(departure.State==undefined){
+    var sheduledIcon = '<i class="material-icons-smaller delayIcon">wysiwygy</i>'
+    if (departure.State == undefined) {
         return unknown;
     }
-    if(departure.State==="InTime"){
+    if (departure.State === "InTime") {
         return onTime;
     }
-    var realTime = generateUTCStringFromUnparsedTimestamp(departure.RealTime||departure.ScheduledTime);
+    var realTime = generateUTCStringFromUnparsedTimestamp(departure.RealTime || departure.ScheduledTime);
     var scheduledTime = generateUTCStringFromUnparsedTimestamp(departure.ScheduledTime);
-    if(realTime==null||scheduledTime==null){
+    if (realTime == null || scheduledTime == null) {
         return unknown;
     }
-    if(realTime!==scheduledTime){
-        var timeDifference = realTime-scheduledTime; 
-        var minutes = generateMinutesFromMiliseconds(timeDifference);
-        if(timeDifference>0){//later
+    if (realTime !== scheduledTime) {
+        var timeDifference = realTime - scheduledTime;
+        var minutes = generateMinutesFromMilliseconds(timeDifference);
+        if (timeDifference > 0) {//later
             var sheduledTimeString = generateHoursAndMinutesFromUtcDateString(scheduledTime);
-                return delayStart+"+"+Math.abs(minutes).toString()+unit+" "+sheduledIcon+sheduledTimeString+" Uhr"+delayEnd;
-        }else{
-            return toEarlyStart+"+"+Math.abs(minutes).toString()+unit+" "+sheduledIcon+sheduledTimeString+" Uhr"+delayEnd;
+            return delayStart + "+" + Math.abs(minutes).toString() + unit + " " + sheduledIcon + sheduledTimeString + " Uhr" + delayEnd;
+        } else {//earlier
+            return toEarlyStart + "+" + Math.abs(minutes).toString() + unit + " " + sheduledIcon + sheduledTimeString + " Uhr" + delayEnd;
         }
-        
+
     }
 }
 
-
-function generateMinutesFromMiliseconds(miliseconds:number|string):number{
-    if(typeof miliseconds =="string"){
-        miliseconds = parseInt(miliseconds);
+/**
+ * Converts milliseconds to minutes
+ * @param milliseconds milliseconds to calculate from
+ */
+function generateMinutesFromMilliseconds(milliseconds: number | string): number {
+    if (typeof milliseconds == "string") {
+        milliseconds = parseInt(milliseconds);
     }
-    var minutes = miliseconds/1000/60;
+    var minutes = milliseconds / 1000 / 60;
     return minutes;
 }
 
-function generateClockTimeStringFromUnparsedUTCTimestamp(unparsedTimestamp:string):string{
-    if(unparsedTimestamp==undefined||unparsedTimestamp==null||unparsedTimestamp===""){
+/**
+ * Generates a time string in Form 00:00 from a VVO API endpoint Date
+ * @param unparsedTimestamp string from the VVO API like /Date(1604085840000-0000)/
+ * @returns timestring onf form 00:00 or XX:XX 
+ */
+function generateClockTimeStringFromUnparsedUTCTimestamp(unparsedTimestamp: string): string {
+    if (unparsedTimestamp == undefined || unparsedTimestamp == null || unparsedTimestamp === "") {
         return "XX:XX"
     }
     var dvbDate = generateUTCStringFromUnparsedTimestamp(unparsedTimestamp);
-    if(dvbDate ==null){
+    if (dvbDate == null) {
         return "XX:XX"
     }
-    return  generateHoursAndMinutesFromUtcDateString(dvbDate);
+    return generateHoursAndMinutesFromUtcDateString(dvbDate);
 
 }
 
-function generateHoursAndMinutesFromUtcDateString(date:number):string{
-    try{
+/**
+ * Generates a Time String in Form 00:00 from a utc timestamp
+ * @param date a number in utc time format
+ * @returns timestring onf form 00:00 or XX:XX 
+ */
+function generateHoursAndMinutesFromUtcDateString(date: number): string {
+    try {
         var thisDate = new Date(date);
         var returnString = "";
-        returnString+=('0'+thisDate.getHours()).substr(-2);
-        returnString+=":"
-        returnString+=('0'+thisDate.getMinutes()).substr(-2);
+        returnString += ('0' + thisDate.getHours()).substr(-2);
+        returnString += ":"
+        returnString += ('0' + thisDate.getMinutes()).substr(-2);
         return returnString;
-    }catch(e){
+    } catch (e) {
         return "XX:XX"
     }
 }
 
 
 /**
- * Generates a 
+ * Generates a utc timestamp 
  * @param utcString String of unparsed DVB-String format, like /Date(1604085840000-0000)/
  */
-function generateUTCStringFromUnparsedTimestamp (utcString:string):number|null{
+function generateUTCStringFromUnparsedTimestamp(utcString: string): number | null {
     var dvbDateRegex = /\/Date\((\d+)-\d*\)\//g;
     var dateMatch = dvbDateRegex.exec(utcString);
-    if(dateMatch==null||dateMatch.length!=2){
+    if (dateMatch == null || dateMatch.length != 2) {
         return null;
     }
     var returnValue = dateMatch[1]
     return parseInt(returnValue);
 }
 
-function generateDistanceString(distance:number):string{
+/**
+ * Generates a short string describing the distance in km or m
+ * @param distance in non-rounded km format 
+ */
+function generateDistanceString(distance: number): string {
     var returnString = "";
-    try{
-    //var roundedDistance = distance*1000;//Meters
-    if(distance>1){
-    var roundedDistanceString = (Math.round(distance*100)/100).toString().substr(0,4);
-    return roundedDistanceString+"km";
-    }else{
-        var roundedDistanceString = (Math.round(distance*1000)).toString();
+    try {
+        //var roundedDistance = distance*1000;//Meters
+        if (distance > 1) {
+            var roundedDistanceString = (Math.round(distance * 100) / 100).toString().substr(0, 4);
+            return roundedDistanceString + "km";
+        } else {
+            var roundedDistanceString = (Math.round(distance * 1000)).toString();
 
-        return roundedDistanceString+"m";
-    }
-    
-    }catch(e){
+            return roundedDistanceString + "m";
+        }
+
+    } catch (e) {
         return ""
     }
 }

@@ -122,11 +122,10 @@ function getCloseStations() {
                                 return [4, getPosition()];
                             case 2:
                                 position = _a.sent();
-                                console.log("GE", position);
                                 return [3, 4];
                             case 3:
                                 e_1 = _a.sent();
-                                showPush("Bitte lassen Sie die Standorterkennung zu, damit Stationen in der Nähe erkannt werden können.");
+                                showPush("Bitte lassen Sie die Standorterkennung zu, damit Stationen in der Nähe erkannt werden können. Eventuell wird dies von ihrem Gerät nicht unterstützt, oder Sie müssen erst ihrem Browser die Berechtigung erteilen.", 20000);
                                 return [2];
                             case 4:
                                 if (position == null) {
@@ -142,7 +141,6 @@ function getCloseStations() {
                                     showPush("Keine Stationen in dem Radius gefunden.");
                                     return [2];
                                 }
-                                console.log(closeStations);
                                 resolve(closeStations);
                                 return [2];
                         }
@@ -195,8 +193,9 @@ function updateHTMLWithDepartures() {
         });
     });
 }
-function showPush(message) {
-    M.toast({ html: message });
+function showPush(message, displayLength) {
+    if (displayLength === void 0) { displayLength = 4000; }
+    M.toast({ html: message, displayLength: displayLength });
 }
 var departureLimit = 6;
 function generateBox(station, departuresContainer) {
@@ -211,14 +210,14 @@ function generateBox(station, departuresContainer) {
         }
         thisDepartureLimit += 1;
     }
-    var html = "\n    <div class=\"col s12 m12 l6\">\n    <div class=\"card\">\n    " + title + "\n    " + departuresHTML + "\n  </div>\n  </div>\n  ";
+    var html = "\n    <div class=\"col s12 m12 l6\">\n    <div class=\"card\">\n        " + title + "\n        " + departuresHTML + "\n    </div>\n    </div>";
     return html;
 }
 function generateTitleHTML(station) {
     var title = station.na;
     var distance = generateDistanceString(station.distance) || "unbekannt";
     var time = "null";
-    var html = "\n<div class=\"stationTitle amber\">\n<div class=\"row noBottomMargin verticalContainer\">\n<div class=\"col s12 m12 l12 overflowHorizontalScroll\">\n  <h6 class=\"noMargin flow-text\"><i class=\"material-icons-smaller grey-text text-darken-4\">location_on</i>" + title + "</h6>\n  <small>Distanz: " + distance + "</small>\n</div>\n</div>\n</div>";
+    var html = "\n            <div class=\"stationTitle amber\">\n            <div class=\"row noBottomMargin verticalContainer\">\n            <div class=\"col s12 m12 l12 overflowHorizontalScroll\">\n            <h6 class=\"noMargin flow-text\"><i class=\"material-icons-smaller grey-text text-darken-4\">location_on</i>" + title + "</h6>\n            <small>Distanz: " + distance + "</small>\n            </div>\n            </div>\n            </div>";
     return html;
 }
 function generateDepartureHTML(departure) {
@@ -302,7 +301,7 @@ function calculateDepartureStatus(departure) {
     }
     if (realTime !== scheduledTime) {
         var timeDifference = realTime - scheduledTime;
-        var minutes = generateMinutesFromMiliseconds(timeDifference);
+        var minutes = generateMinutesFromMilliseconds(timeDifference);
         if (timeDifference > 0) {
             var sheduledTimeString = generateHoursAndMinutesFromUtcDateString(scheduledTime);
             return delayStart + "+" + Math.abs(minutes).toString() + unit + " " + sheduledIcon + sheduledTimeString + " Uhr" + delayEnd;
@@ -312,11 +311,11 @@ function calculateDepartureStatus(departure) {
         }
     }
 }
-function generateMinutesFromMiliseconds(miliseconds) {
-    if (typeof miliseconds == "string") {
-        miliseconds = parseInt(miliseconds);
+function generateMinutesFromMilliseconds(milliseconds) {
+    if (typeof milliseconds == "string") {
+        milliseconds = parseInt(milliseconds);
     }
-    var minutes = miliseconds / 1000 / 60;
+    var minutes = milliseconds / 1000 / 60;
     return minutes;
 }
 function generateClockTimeStringFromUnparsedUTCTimestamp(unparsedTimestamp) {
@@ -396,27 +395,6 @@ function getPosition() {
         });
     });
 }
-function geosuccess(pos) {
-    var crd = pos.coords;
-    var closeStations = findCloseStations(crd.latitude, crd.longitude);
-}
-function geoerror(error) {
-    console.warn("ERROR(" + error.code + "): " + error.message);
-    switch (error.code) {
-        case error.PERMISSION_DENIED:
-            alert('User did not share location');
-            break;
-        case error.POSITION_UNAVAILABLE:
-            alert('Unable to get position');
-            break;
-        case error.TIMEOUT:
-            alert('Request timed out');
-            break;
-        default:
-            alert('An error occured');
-            break;
-    }
-}
 function post(url, data) {
     if (url === void 0) { url = ''; }
     if (data === void 0) { data = {}; }
@@ -443,10 +421,10 @@ function post(url, data) {
         });
     });
 }
-var currentRefreshState = 0;
-var isCurrentlyLoading = false;
 var intervallTimeInSeconds = 20;
 var isDisabled = false;
+var isCurrentlyLoading = false;
+var currentRefreshState = 0;
 var refreshIntervall = setInterval(function () {
     if (getIfAutorefreshIsEnabled() == false) {
         isDisabled = true;

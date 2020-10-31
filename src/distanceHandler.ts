@@ -6,11 +6,11 @@
  * @param {float} long1 Longitude in decimal degrees 
  * @param {number} radius in km to search
  */
-function findCloseStations(lat1:number, long1:number, radius = 0.4):rawDataStationElement[] {
-    var results:rawDataStationElement[] = [];
+function findCloseStations(lat1: number, long1: number, radius = 0.4): rawDataStationElement[] {
+    var results: rawDataStationElement[] = [];
     //@ts-ignore because data is not defined
     for (var elementKey in data) {
-         //@ts-ignore
+        //@ts-ignore
         var element = data[elementKey];
         var distance = findDistance(lat1, long1, element.lat, element.lon);
         if (distance < radius) {
@@ -27,7 +27,7 @@ function findCloseStations(lat1:number, long1:number, radius = 0.4):rawDataStati
  * Sorts an Array of stations by distance
  * @param {array} elements Array of station elements. Needs "distance" attribute per object in List
  */
-function sortLocationsByDistance(elements:rawDataStationElement[]) {
+function sortLocationsByDistance(elements: rawDataStationElement[]) {
     try {
         var returnElements = elements.sort(function (a, b) { return a.distance - b.distance });
         return returnElements;
@@ -47,7 +47,7 @@ var Rk = 6373; // the earths radius in km at ca 39 degrees from the equator. Wik
  * @param {*} longitude2 Longitude of second point
  * @returns Distance in KM
  */
-function findDistance(latitude1:number, longitude1:number, latitude2:number, longitude2:number) {
+function findDistance(latitude1: number, longitude1: number, latitude2: number, longitude2: number) {
 
     // convert coordinates to rad
     var lat1 = degree2rad(latitude1);
@@ -72,7 +72,7 @@ function findDistance(latitude1:number, longitude1:number, latitude2:number, lon
  * @param deg Degree
  * @returns radiant
  */
-function degree2rad(deg:number) {
+function degree2rad(deg: number) {
     var rad = deg * Math.PI / 180; // radians = degrees * pi/180
     return rad;
 }
