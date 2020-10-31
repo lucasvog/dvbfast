@@ -77,6 +77,7 @@ function degree2rad(deg) {
 function init() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
+            setAutoRefreshSwitchState("off");
             M.AutoInit();
             initData();
             return [2];
@@ -125,13 +126,23 @@ function getCloseStations() {
                                 return [3, 4];
                             case 3:
                                 e_1 = _a.sent();
-                                showPush("Bitte lassen Sie die Standorterkennung zu, damit Stationen in der Nähe erkannt werden können. Eventuell wird dies von ihrem Gerät nicht unterstützt, oder Sie müssen erst ihrem Browser die Berechtigung erteilen.", 20000);
+                                console.log(e_1);
+                                if (e_1.code == 1) {
+                                    showPush("Fehler: Berechtigung nicht erteilt. Bitte lassen Sie die Standorterkennung zu, damit Stationen in der Nähe erkannt werden können. ", 10000);
+                                    return [2];
+                                }
+                                if (e_1.code == 2) {
+                                    showPush("Fehler: Positionserkennung aktuell nicht verfügbar.", 10000);
+                                    return [2];
+                                }
+                                showPush("Fehler: " + e_1.code, 5000);
                                 return [2];
                             case 4:
                                 if (position == null) {
                                     showPush("Standort kann nicht bestimmt werden.");
                                     return [2];
                                 }
+                                setAutoRefreshSwitchState("on");
                                 closeStations = findCloseStations(position.coords.latitude, position.coords.longitude);
                                 if (closeStations == undefined || closeStations == null) {
                                     showPush("Stationen in der konntent nicht gefunden werden.");
@@ -480,6 +491,15 @@ function setSpinnerState(state) {
     }
     else {
         spinner.classList.remove("spinning");
+    }
+}
+function setAutoRefreshSwitchState(state) {
+    var thisSwitch = document.getElementById("autorefreshSwitch");
+    if (state == "on") {
+        thisSwitch.checked = true;
+    }
+    else {
+        thisSwitch.checked = false;
     }
 }
 function updateRefreshButtonProgress(progress) {

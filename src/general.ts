@@ -3,6 +3,7 @@
  * Entry point, inits Materialize CSS and first round of Data
  */
 async function init() {
+    setAutoRefreshSwitchState("off")
     //@ts-ignore
     M.AutoInit();
     initData();
@@ -32,13 +33,23 @@ async function getCloseStations(): Promise<rawDataStationElement[]> {
         try {
             position = await getPosition();
         } catch (e) {
-            showPush("Bitte lassen Sie die Standorterkennung zu, damit Stationen in der Nähe erkannt werden können. Eventuell wird dies von ihrem Gerät nicht unterstützt, oder Sie müssen erst ihrem Browser die Berechtigung erteilen.", 20000);
+            console.log(e);
+            if(e.code==1){
+                showPush("Fehler: Berechtigung nicht erteilt. Bitte lassen Sie die Standorterkennung zu, damit Stationen in der Nähe erkannt werden können. ", 10000);
+                return;
+            }
+            if(e.code==2){
+                showPush("Fehler: Positionserkennung aktuell nicht verfügbar.", 10000);
+                return;
+            }
+            showPush("Fehler: "+e.code, 5000);
             return;
         }
         if (position == null) {
             showPush("Standort kann nicht bestimmt werden.");
             return;
         }
+        setAutoRefreshSwitchState("on");
         var closeStations: rawDataStationElement[] = findCloseStations(position.coords.latitude, position.coords.longitude);
         //var closeStations:rawDataStationElement[] = findCloseStations(51.053533, 13.816152); //Seilbahnen testen
         //var closeStations:rawDataStationElement[] = findCloseStations(51.039867, 13.733739); Hauptbahnhof

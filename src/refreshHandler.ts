@@ -67,6 +67,19 @@ function setSpinnerState(state: "on" | "off") {
 }
 
 /**
+ * Sets the state of the switch that toggles the auto refresh
+ * @param state state of the switch
+ */
+function setAutoRefreshSwitchState(state:"on"|"off"){
+   var thisSwitch:any = document.getElementById("autorefreshSwitch");
+if(state=="on"){
+    thisSwitch.checked  =true;
+}else{
+    thisSwitch.checked = false;
+}
+}
+
+/**
  * Updates the gradient on the refresh button
  * @param progress in a range from 0 to 1
  */

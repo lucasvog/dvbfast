@@ -1,11 +1,11 @@
 this.addEventListener('install', function(event) {
     event.waitUntil(
-      caches.open('v1').then(function(cache) {
+      caches.open('v2').then(function(cache) {
         return cache.addAll([
-          '/index.html',
+          
           '/assets/css/style.css',
           '/assets/js/data.js',
-          '/assets/js/script.js',
+          
           '/assets/fonts/material-design-icons/font/MaterialIcons-Regular.ttf',
           '/assets/frameworks/materialize/css/materialize.min.css',
           '/assets/frameworks/materialize/js/materialize.min.js',
@@ -13,6 +13,8 @@ this.addEventListener('install', function(event) {
       })
     );
   });
+//'/assets/js/script.js',
+//'/index.html',
 
   self.addEventListener('fetch', function(event) {
     event.respondWith(
