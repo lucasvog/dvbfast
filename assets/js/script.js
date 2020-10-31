@@ -297,6 +297,9 @@ function generateBox(station, departuresContainer) {
     var departuresHTML = "";
     var departures = departuresContainer.Departures;
     var thisDepartureLimit = 0;
+    if (departures === undefined) {
+        return "";
+    }
     for (var _i = 0, departures_1 = departures; _i < departures_1.length; _i++) {
         var departure = departures_1[_i];
         if (thisDepartureLimit < departureLimit) {
@@ -474,7 +477,6 @@ function getPosition() {
                         reject({ code: 3, message: "timeout" });
                         return;
                     }, 30000);
-                    console.log("start getting");
                     try {
                         navigator.geolocation.getCurrentPosition(function (pos) { return __awaiter(_this, void 0, void 0, function () {
                             return __generator(this, function (_a) {

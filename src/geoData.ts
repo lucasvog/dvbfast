@@ -25,7 +25,6 @@ async function getPosition():Promise<any> {
             reject({code:3,message:"timeout"});
             return;
         }, 30000)//after X seconds: timeout
-        console.log("start getting")
         try{
         navigator.geolocation.getCurrentPosition(async (pos: any) => {
             clearTimeout(timeout);

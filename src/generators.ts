@@ -10,8 +10,11 @@ const departureLimit = 6;
 function generateBox(station: rawDataStationElement, departuresContainer: DepartureContainer): string {
     const title = generateTitleHTML(station);
     let departuresHTML = "";
-    const departures = departuresContainer.Departures;
+    let departures = departuresContainer.Departures;
     let thisDepartureLimit = 0;
+    if(departures===undefined){
+        return "";
+    }
     for (const departure of departures) {
         if (thisDepartureLimit < departureLimit) {
             departuresHTML += generateDepartureHTML(departure);
