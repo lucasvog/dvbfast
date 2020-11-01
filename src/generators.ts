@@ -5,10 +5,11 @@ const departureLimit = 6;
  * Generates the HTML for a station including the departures
  * @param station station for the box
  * @param departuresContainer departure-element from the VVO API
+ * @param isSearchResult if this is a search result, some data will be shown different
  * @returns HTML
  */
-function generateBox(station: rawDataStationElement, departuresContainer: DepartureContainer): string {
-    const title = generateTitleHTML(station);
+function generateBox(station: rawDataStationElement, departuresContainer: DepartureContainer,isSearchResult=false): string {
+    const title = generateTitleHTML(station,isSearchResult);
     let departuresHTML = "";
     let departures = departuresContainer.Departures;
     let thisDepartureLimit = 0;
@@ -23,7 +24,7 @@ function generateBox(station: rawDataStationElement, departuresContainer: Depart
     }
     let html = `
     <div class="col s12 m12 l6">
-    <div class="card">
+    <div class="card ${isSearchResult==true?"searchResultCard":""}">
         ${title}
         ${departuresHTML}
     </div>
@@ -35,18 +36,22 @@ function generateBox(station: rawDataStationElement, departuresContainer: Depart
 /**
  * Generates the title HTML of a station
  * @param station station to generate html from
+ * @param isSearchResult if this is a search result
+ * @returns html
  */
-function generateTitleHTML(station: rawDataStationElement) {
+function generateTitleHTML(station: rawDataStationElement,isSearchResult=false) {
     const title = station.na;
     const distance = generateDistanceString(station.distance) || "unbekannt";
-    const time = "null"
+    
     let html = `
-            <div class="stationTitle amber">
+            <div class="stationTitle amber ${isSearchResult==true?"searchResult":""}">
             <div class="row noBottomMargin verticalContainer">
             <div class="col s12 m12 l12 overflowHorizontalScroll">
-            <h6 class="noMargin flow-text"><i class="material-icons-smaller grey-text text-darken-4">location_on</i>${title}</h6>
-            <small>Distanz: ${distance}</small>
-            </div>
+            <h6 class="noMargin flow-text"><i class="material-icons-smaller grey-text text-darken-4">location_on</i>${title}</h6>`
+            if(isSearchResult==false){
+           html+=`<small>Distanz: ${distance}</small>` ;
+            }
+            html+=`</div>
             </div>
             </div>`;
     return html;
@@ -151,7 +156,6 @@ function calculateLineClassName(departure: Departure): string {
  * @param departure departure-Element from the VVO-API
  */
 function calculateDepartureStatus(departure: Departure) {
-    console.log(departure);
     const onTime = '<i class="material-icons-smaller onTime">check_circle</i>pünktlich';
     const unknown = '';
     const delayStart = '<i class="material-icons-smaller delayed">warning</i><span class="delayedText">';

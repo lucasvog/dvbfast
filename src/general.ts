@@ -7,6 +7,7 @@ async function init() {
     //@ts-ignore
     M.AutoInit();
     await initStationsData();
+    initSearch();
     await initData();
     setAutoRefreshSwitchState("on");
     initialLoad = false;

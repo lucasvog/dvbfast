@@ -210,6 +210,32 @@
   <div class="container">
 
 
+    <div class="row">
+      <div class="col s12">
+        <div class="row noBottomMargin">
+          <div class="input-field col s12 noBottomMargin">
+            <i class="material-icons prefix">search</i>
+            <input type="text" id="autocomplete-input" class="autocomplete">
+            <label for="autocomplete-input">Suche</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+<!-- Search result container -->
+    <div class="card z-depth-0 searchResultContainer hidden" id="searchResultContainer">
+      <div class="card-action">
+        <h4 class="noMargin title">Suchergebnis</h4>
+        <a href="#" class="right noMargin searchCloseButton" onclick="closeResult()"><i class="material-icons prefix">close</i></a>
+      </div>
+      <a href="#" ></a>
+      <div class="card-content" id="searchResult">
+        
+        
+        
+      </div>
+    </div>
+
     <!-- Container for Data -->
     <div id="boxcontainer" class="row">
 

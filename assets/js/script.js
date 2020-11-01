@@ -158,6 +158,7 @@ function init() {
                     return [4, initStationsData()];
                 case 1:
                     _a.sent();
+                    initSearch();
                     return [4, initData()];
                 case 2:
                     _a.sent();
@@ -294,8 +295,9 @@ function showPush(message, displayLength) {
     M.toast({ html: message, displayLength: displayLength });
 }
 var departureLimit = 6;
-function generateBox(station, departuresContainer) {
-    var title = generateTitleHTML(station);
+function generateBox(station, departuresContainer, isSearchResult) {
+    if (isSearchResult === void 0) { isSearchResult = false; }
+    var title = generateTitleHTML(station, isSearchResult);
     var departuresHTML = "";
     var departures = departuresContainer.Departures;
     var thisDepartureLimit = 0;
@@ -309,14 +311,18 @@ function generateBox(station, departuresContainer) {
         }
         thisDepartureLimit += 1;
     }
-    var html = "\n    <div class=\"col s12 m12 l6\">\n    <div class=\"card\">\n        " + title + "\n        " + departuresHTML + "\n    </div>\n    </div>";
+    var html = "\n    <div class=\"col s12 m12 l6\">\n    <div class=\"card " + (isSearchResult == true ? "searchResultCard" : "") + "\">\n        " + title + "\n        " + departuresHTML + "\n    </div>\n    </div>";
     return html;
 }
-function generateTitleHTML(station) {
+function generateTitleHTML(station, isSearchResult) {
+    if (isSearchResult === void 0) { isSearchResult = false; }
     var title = station.na;
     var distance = generateDistanceString(station.distance) || "unbekannt";
-    var time = "null";
-    var html = "\n            <div class=\"stationTitle amber\">\n            <div class=\"row noBottomMargin verticalContainer\">\n            <div class=\"col s12 m12 l12 overflowHorizontalScroll\">\n            <h6 class=\"noMargin flow-text\"><i class=\"material-icons-smaller grey-text text-darken-4\">location_on</i>" + title + "</h6>\n            <small>Distanz: " + distance + "</small>\n            </div>\n            </div>\n            </div>";
+    var html = "\n            <div class=\"stationTitle amber " + (isSearchResult == true ? "searchResult" : "") + "\">\n            <div class=\"row noBottomMargin verticalContainer\">\n            <div class=\"col s12 m12 l12 overflowHorizontalScroll\">\n            <h6 class=\"noMargin flow-text\"><i class=\"material-icons-smaller grey-text text-darken-4\">location_on</i>" + title + "</h6>";
+    if (isSearchResult == false) {
+        html += "<small>Distanz: " + distance + "</small>";
+    }
+    html += "</div>\n            </div>\n            </div>";
     return html;
 }
 function generateDepartureHTML(departure) {
@@ -383,7 +389,6 @@ function calculateLineClassName(departure) {
     return returnClassValue;
 }
 function calculateDepartureStatus(departure) {
-    console.log(departure);
     var onTime = '<i class="material-icons-smaller onTime">check_circle</i>pünktlich';
     var unknown = '';
     var delayStart = '<i class="material-icons-smaller delayed">warning</i><span class="delayedText">';
@@ -589,6 +594,7 @@ var refreshIntervall = setInterval(function () {
     var progress = currentRefreshState / intervallTimeInSeconds;
     if (progress >= 1) {
         refreshInfos();
+        updateSearchResult();
     }
     updateRefreshButtonProgress(progress);
 }, 1000);
@@ -654,7 +660,101 @@ function generateProgressGradientString(progress) {
     var html = "background: linear-gradient(90deg, #ff8f00 0%, #f57c00 " + progressInPercent + "%, #ff8f00 " + progressInPercent + "%);";
     return html;
 }
+var lastResultStation = null;
 function initSearch() {
+    lastResultStation = null;
+    var elems = document.querySelectorAll('.autocomplete');
+    var optionsData = {};
+    for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
+        var element = data_1[_i];
+        var key = element.l + " " + element.na;
+        optionsData[key] = null;
+    }
+    var instances = M.Autocomplete.init(elems, {
+        data: optionsData,
+        minLength: 1,
+        onAutocomplete: handleResult,
+        sortFunction: sortResultFunction
+    });
+}
+function sortResultFunction(a, b, inputString) {
+    var extra = 0;
+    if (!inputString.startsWith("D")) {
+        extra = -5000;
+    }
+    else {
+        extra = 5000;
+    }
+    return a.indexOf(inputString) - b.indexOf(inputString) + extra;
+}
+function handleResult(query) {
+    return __awaiter(this, void 0, void 0, function () {
+        var result;
+        return __generator(this, function (_a) {
+            console.log(query);
+            result = matchTitleWithStation(query);
+            if (result == null) {
+                showPush("Station konnte nicht gefunden werden.");
+                return [2];
+            }
+            lastResultStation = result;
+            updateSearchResult();
+            return [2];
+        });
+    });
+}
+function updateSearchResult() {
+    return __awaiter(this, void 0, void 0, function () {
+        var departures, html;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (lastResultStation == null) {
+                        return [2];
+                    }
+                    return [4, getDeparturesOfStation(lastResultStation)];
+                case 1:
+                    departures = _a.sent();
+                    if (departures == undefined || departures == null) {
+                        showPush("Fehler beim Laden der nächsten Verbindungen.");
+                        return [2];
+                    }
+                    html = generateBox(lastResultStation, departures, true);
+                    setSearchContainerVisibility("visible");
+                    setResultContainerHTML(html);
+                    return [2];
+            }
+        });
+    });
+}
+function matchTitleWithStation(title) {
+    for (var _i = 0, data_2 = data; _i < data_2.length; _i++) {
+        var element = data_2[_i];
+        var key = element.l + " " + element.na;
+        if (key === title) {
+            return element;
+        }
+    }
+    showPush("Station wurde nicht gefunden.");
+    return null;
+}
+function closeResult() {
+    lastResultStation = null;
+    setSearchContainerVisibility("hidden");
+    setResultContainerHTML("");
+}
+function setResultContainerHTML(html) {
+    var resultBox = document.getElementById("searchResult");
+    resultBox.innerHTML = html;
+}
+function setSearchContainerVisibility(status) {
+    var searchContainer = document.getElementById("searchResultContainer");
+    if (status === "visible") {
+        searchContainer.classList.remove("hidden");
+    }
+    else {
+        searchContainer.classList.add("hidden");
+    }
 }
 var departureEndpoint = 'https://webapi.vvo-online.de/dm';
 function getDeparturesOfStation(station) {

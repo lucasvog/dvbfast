@@ -207,11 +207,6 @@ html,body,.container{
   color:rgb(143, 1, 1);
 }
 
-
-
-
-
-
 .spinning{
   -webkit-animation-name: spin;
   -webkit-animation-duration: 2000ms;
@@ -303,23 +298,19 @@ summary{
   animation: octocat-wave 560ms ease-in-out
 }
 
-.pulseIcon {
-  animation: pulse-animation 2s infinite;
+.autocomplete-content.dropdown-content li span{
+  color:black;
+  }
+.autocomplete-content.dropdown-content li span.highlight{
+color:#ff8f00;
 }
-
-@keyframes pulse-animation {
-  0% {
-    color: rgba(143, 1, 1,0.5);
-  }
-  50% {
-    color: rgba(143, 1, 1,1);
-  }
-  100% {
-    color: rgba(143, 1, 1,0.5);
-  }
-
+.material-icons.prefix.active{
+  color:#ff8f00!important;
 }
-
+.input:not([type]):focus:not([readonly]), input[type="text"]:not(.browser-default):focus:not([readonly]), input[type="password"]:not(.browser-default):focus:not([readonly]), input[type="email"]:not(.browser-default):focus:not([readonly]), input[type="url"]:not(.browser-default):focus:not([readonly]), input[type="time"]:not(.browser-default):focus:not([readonly]), input[type="date"]:not(.browser-default):focus:not([readonly]), input[type="datetime"]:not(.browser-default):focus:not([readonly]), input[type="datetime-local"]:not(.browser-default):focus:not([readonly]), input[type="tel"]:not(.browser-default):focus:not([readonly]), input[type="number"]:not(.browser-default):focus:not([readonly]), input[type="search"]:not(.browser-default):focus:not([readonly]), textarea.materialize-textarea:focus:not([readonly]){
+  border-bottom:1px solid #ff8f00!important;
+  box-shadow: 0 1px 0 0 #ff8f00!important;
+}
 
 @keyframes octocat-wave {
 
@@ -347,6 +338,40 @@ summary{
   .github-corner .octo-arm {
     animation: octocat-wave 560ms ease-in-out
   }
+}
+
+
+.searchResultContainer{
+  position: relative;
+
+}
+.searchCloseButton{
+  position: absolute;
+  top:0px;
+  right:7px;
+  color:black;
+  
+}
+.searchCloseButton i{
+  color: black!important;
+  font-size: 200%;
+  margin-top: 15px;
+  margin-right: 10px;
+}
+.searchCloseButton i:hover{
+  color: #ff8f00!important;
+}
+.searchResultContainer{
+  background-color: #e8e8e8!important;
+}
+.searchResultContainer.hidden {
+  display: none;
+}
+.searchResultContainer .card-action{
+  border-bottom: 2px solid rgba(0,0,0,0.06);
+}
+.searchResultContainer .card-action .title{
+  display: inline-block;
 }
 
 
@@ -401,5 +426,33 @@ summary{
   .dsgvo{
     color:white;
   }
+  .autocomplete-content.dropdown-content{
+    background-color:#424242;
+    }
+    .autocomplete-content.dropdown-content li:hover{
+      background-color:#555555;
+      }
+  .autocomplete-content.dropdown-content li span{
+    color:white;
+    }
+  .autocomplete-content.dropdown-content li span.highlight{
+  color:#ff8f00;
+  }
+  #autocomplete-input{
+    color:white!important;
+  }
+  .material-icons.prefix{
+    color:white!important;
+  }
+  .searchResultContainer{
+  background-color: #323232!important;
+}
+.searchResultContainer .card-action .title{
+  color:white;
+}
+.searchResultCard{
+background-color:#555555!important ;
+}
+
 }
 
