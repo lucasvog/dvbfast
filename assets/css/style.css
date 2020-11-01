@@ -241,10 +241,20 @@ html,body,.container{
 }
 
 .refreshButton{
+  padding-left: 5px!important;
+  padding-right: 5px!important;
   -webkit-transition: background 1s ease-out;  
     -moz-transition: background 1s ease-out;  
     -o-transition: background 1s ease-out;  
     transition: background 1s ease-out;  
+}
+.dsgvo{
+    word-wrap: break-word;      /* IE 5.5-7 */
+    white-space: -moz-pre-wrap; /* Firefox 1.0-2.0 */
+    white-space: pre-wrap;      /* current browsers */
+}
+.dsgvo p{
+  margin:0px!important;
 }
 .switch label input[type="checkbox"]:checked + .lever::after{
   
@@ -268,6 +278,13 @@ summary{
 .forkBanner{
   position: absolute;
   right:0px;
+}
+
+#refreshSpinner{
+  margin-right: 5px!important;
+}
+.sidenav-trigger{
+  display: block!important;
 }
 
 .github-corner:hover .octo-arm {
@@ -301,3 +318,52 @@ summary{
     animation: octocat-wave 560ms ease-in-out
   }
 }
+
+
+
+
+/* Dark Mode */
+
+@media (prefers-color-scheme: dark) {
+  body{
+    background-color: #212121;
+  }
+  .octo-body{
+    fill: #212121;
+  }
+  .octo-arm{
+    fill: #212121;
+  }
+  .tripContainer{
+    background-color: #424242;
+    color:white;
+  }
+  .delayed{
+    color:rgb(232, 62, 62);
+  }
+  .delayedText{
+    color:rgb(232, 62, 62);
+  }
+  #boxcontainer > div > .card{
+    background-color: #424242;
+  }
+  .sidenav{
+    background-color: #424242!important;
+    color:white!important;
+  }
+  .sidenav li a,.sidenav li a i.material-icons{
+    color:white!important;
+    text-decoration: none;
+  }
+  .sidenav li::marker{
+    color:rgba(0,0,0,0)!important;
+  }
+  .modal,.modal-footer{
+    background-color: #424242!important;
+    color:white!important;
+  }
+  .modal-footer a{
+    color:white!important;
+  }
+}
+

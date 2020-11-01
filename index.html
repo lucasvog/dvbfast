@@ -58,25 +58,51 @@
       </ul>
     </div>
   </nav>
-
-
-  <ul class="sidenav" id="mobile-menu">
-    <li><a href="https://github.com/lucasvog/dvbfast" target="_blank"><i
-          class="material-icons grey-text text-darken-4">web</i> Auf Github ansehen</a></li>
-    <hr>
-  </ul>
+  <!-- Invisible Menu clone, that the content has the right amount of space at the top -->
   <nav class="invisible">
     <div class="nav-wrapper amber">
     </div>
   </nav>
-  <!-- <a class="forkBanner hide-on-med-and-down" target="_blank" href="https://github.com/lucasvog/dvbfast">
-    <img loading="lazy" width="149" height="149"
-      src="https://github.blog/wp-content/uploads/2008/12/forkme_right_orange_ff7600.png?resize=149%2C149"
-      class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1">
-  </a> -->
-  <a href="https://github.com/lucasvog/dvbfast" target="_blank" class="github-corner forkBanner hide-on-med-and-down" aria-label="View source on GitHub"><svg width="80" height="80"
-      viewBox="0 0 250 250" style="fill:#ffa000; color:#fff; position: absolute; top: 0; border: 0; right: 0;"
-      aria-hidden="true">
+
+  <!-- Mobile Menu -->
+  <ul class="sidenav" id="mobile-menu">
+
+    <li>
+      <div class="user-view">
+        <div class="background amber">
+        </div>
+        <img class="circle" src="assets/images/icons/Icon-512.png">
+        <span class="black-text name">DVBFast</span>
+        <span class="white-text email"></span>
+      </div>
+    </li>
+
+    <li><a class="subheader">Allgemeines</a></li>
+    <li><a href="#aboutModal" class=" modal-trigger"><i class="material-icons grey-text text-darken-4">info</i> Über</a>
+    </li>
+    <li><a href="#installModal" class=" modal-trigger"><i
+          class="material-icons grey-text text-darken-4">add_to_home_screen</i> Installation</a>
+    </li>
+    <li><a class="subheader">Links</a></li>
+    <li><a href="https://github.com/lucasvog/dvbfast" target="_blank"><i
+          class="material-icons grey-text text-darken-4">open_in_new</i> Auf Github ansehen</a></li>
+    <li><a href="https://github.com/lucasvog/dvbfast/issues" target="_blank"><i
+          class="material-icons grey-text text-darken-4">bug_report</i> Einen Fehler melden</a></li>
+
+    <li><a class="subheader">Sonstiges</a></li>
+    <li><a href="#licenceModal" class=" modal-trigger"><i
+      class="material-icons grey-text text-darken-4">description</i> Lizenzen</a>
+    <li><a href="https://lucas-vogel.de/impressum/" target="_blank"><i
+          class="material-icons grey-text text-darken-4">notes</i>Impressum</a></li>
+    <li><a href="dsgvo.html" target="_blank"><i
+          class="material-icons grey-text text-darken-4">security</i>Datenschutz</a></li>
+
+  </ul>
+
+  <!-- GITHUB CORNER -->
+  <a href="https://github.com/lucasvog/dvbfast" target="_blank" class="github-corner forkBanner hide-on-med-and-down"
+    aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250"
+      style="fill:#ffa000; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
       <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
       <path
         d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
@@ -86,8 +112,94 @@
         fill="currentColor" class="octo-body"></path>
     </svg></a>
 
+
+
+  <!-- Modal Trigger for Testing -->
+  <!-- <a class="waves-effect waves-light btn modal-trigger" href="#installModal">Modal</a> -->
+
+  <!-- About Modal -->
+  <div id="aboutModal" class="modal  modal-fixed-footer">
+    <div class="modal-content">
+      <div class="centerText">
+        <img src="assets/images/icons/Icon-128.png" alt="Logo">
+        <h4>DVBFast</h4>
+        <div class="halfspacing"></div>
+      </div>
+      <p>Diese Open Source Anwendung ist dafür gedacht, schnell Informationen über umliegende Haltestellen in Dresden
+        abzufragen - ohne Nutzereingabe!</p>
+      <p>Hinweis: Dies ist <b>KEINE</b> offizielle Anwendung der Dresdner Verkehrsbetriebe oder der VVO.
+        Der Quellcode ist öffentlich auf GitHub einsehbar.
+        Keinerlei Daten werden erhoben: Alle Daten liegen auf den GitHub-Servern, und die Schnittstelle der VVO wird
+        ohne Proxy angesprochen. Alle Angaben sind ohne Gewähr.
+
+      </p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Ok</a>
+    </div>
+  </div>
+
+  <!-- Installation Modal -->
+
+  <div id="installModal" class="modal modal-fixed-footer">
+    <div class="modal-content">
+      <h4>Installationsanleitung</h4>
+      <p>Die Webseite muss nach Plattform unterschiedlich installiert werden.</p>
+      <b>iOS</b>
+      <ol>
+        <li>Die Webseite in Safari Öffnen</li>
+        <li>Auf "Teilen" gehen</li>
+        <li>Nach unten scrollen, und "Zum Home-Bildschirm" auswählen</li>
+        <li>Mit "Hinzufügen" Bestätigen</li>
+      </ol>
+      <b>Android</b>
+      <ol>
+        <li>Die Webseite in Chrome Öffnen</li>
+        <li>Menü aufrufen</li>
+        <li>"Zum Home-Bildschirm hinzufügen" auswählen</li>
+        <li>Eventuell Hinzufügen Bestätigen</li>
+      </ol>
+      Eventuell direkt auf den "Installieren"-Banner klicken falls dieser auftaucht (siehe <a
+        href="https://developers.google.com/web/updates/2018/06/a2hs-updates" title="Chrome Updates">Chrome Updates</a>)
+
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Ok</a>
+    </div>
+  </div>
+
+
+  <!-- Licences Modal -->
+  <div id="licenceModal" class="modal  modal-fixed-footer">
+    <div class="modal-content">
+      <div class="centerText">
+        <img src="assets/images/icons/Icon-128.png" alt="Logo">
+        <h4>Lizenzen</h4>
+        <div class="halfspacing"></div>
+      </div>
+      <p xmlns:dct="http://purl.org/dc/terms/" xmlns:cc="http://creativecommons.org/ns#" class="license-text"><a
+          rel="cc:attributionURL" property="dct:title" href="https://dvbfast.github.io">DVBFast</a> by <a
+          rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/lucasvog">Lucas
+          Vogel</a> is licensed under <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC
+          BY-NC-SA 4.0</p></a>
+      <h5>Weitere Lizenzen</h5>
+      - https://github.com/tholman/github-corners unter MIT-Lizenz<br>
+- https://materializecss.com/ unter MIT-Lizenz<br>
+- https://material.io/resources/icons/ unter Apache 2.0 Lizenz<br>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat">Ok</a>
+    </div>
+  </div>
+
+
+
+
   <div class="halfspacing"></div>
   <div class="container">
+
+
+    <!-- Container for Data -->
     <div id="boxcontainer" class="row">
 
 
@@ -108,18 +220,9 @@
           </div>
         </div>
       </div>
-
-
-
-
-
-
     </div>
-
   </div>
 
-
-  </div>
 
 
 
@@ -128,10 +231,7 @@
   <script src="./assets/js/script.js"></script>
   <script src="./assets/js/serviceWorkerInstaller.js" defer></script>
 
-  <div class="footerRow">
-    <a href="https://lucas-vogel.de/impressum/">Impressum</a>
-    <a href="dsgvo.html">Datenschutz</a>
-  </div>
+
 </body>
 
 </html>

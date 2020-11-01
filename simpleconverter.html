@@ -6,9 +6,36 @@
 </head>
 
 <body>
+    <h2 style="color:red">Falls Sie nicht wissen, was sie hier tun sollen, sollten Sie die Seite verlassen.</h2>
+    <p>Dieses Schript sucht alle IDs aller Haltestellen des VVO.</p>
+    <p>Die entstandenen Daten sind unter <a href="https://github.com/lucasvog/dvbfast">https://github.com/lucasvog/dvbfast</a> bei assets > data einsehbar.</p>
+    <p>Das Ausführen dieses Scriptes produziert lediglich diese Daten.</p>
+    
+    <br><br>
+    <input type="checkbox" id="checkbox"><label for="checkbox">Ich weiß was ich tue. Das Ausführen dieses Scriptes kann zu erheblicher Serverlast führen. Unnötiges Ausführen ist nicht gestattet.</label>
+    <br><br>
+
+    <button onclick="convert()">convert</button>
+
+    <br><br>
+    <textarea id="target">
+
+    </textarea>
     <script src="./assets/js/rawdata.js"></script>
+    
     <script>
         async function convert() {
+
+            var checkbox = document.getElementById("checkbox");
+            var target = document.getElementById("target");
+            if(checkbox.checked!==true){
+                alert("Ausführen nicht gestattet.");
+                return;
+            }
+            var r = confirm("Sind Sie sich sicher?")
+            if (r !== true) {
+            return;
+            } 
             var json = JSON.parse(data);
             //console.log(json);
             var returnData = [];
@@ -30,10 +57,12 @@
                 await sleep(0.2);
                 //break;
                 thisIndex+=1;
+                target.value = JSON.stringify(returnData);
+                //return;
             }
-            document.body.insertAdjacentText("beforeend", JSON.stringify(returnData));
+            target.value = JSON.stringify(returnData);
         }
-        convert();
+        
 
         async function sleep(seconds){
             return new Promise(async (resolve, reject) => {
