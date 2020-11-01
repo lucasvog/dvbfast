@@ -593,6 +593,7 @@ var refreshIntervall = setInterval(function () {
     }
     var progress = currentRefreshState / intervallTimeInSeconds;
     if (progress >= 1) {
+        currentRefreshState = 0;
         refreshInfos();
         updateSearchResult();
     }

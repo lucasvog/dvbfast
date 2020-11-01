@@ -22,6 +22,7 @@ let refreshIntervall = setInterval(() => {
     }
     const progress = currentRefreshState / intervallTimeInSeconds;
     if (progress >= 1) {
+        currentRefreshState = 0;
         refreshInfos();
         updateSearchResult();//in searchHandler.ts
     }
