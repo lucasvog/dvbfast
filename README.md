@@ -3,8 +3,21 @@
 
 # DVBfast
 Die schnellste Möglichkeit, Abfahrtsinformationen in Dresden zu erhalten.
+
 *The fastest way to get your departure infos in Dresden*
+<br>
+<style>
+.openButton{
+background-color:#ffc107;color:black;padding:12px;overflow:hidden;border-radius:5px; font-size:20px
+}
+.openButton:hover{
+    background-color:#ffd54f!important;
+}
+</style>
+<a class="openButton" href="https://dvbfast.github.io" target="_blank" style="background-color:#ffc107;color:black;padding:12px;overflow:hidden;border-radius:5px; font-size:20px">Öffnen</a>
  </div>
+<br>
+<br>
 
 Disclaimer: Das Repo liegt bei <a href="https://github.com/lucasvog/dvbfast" title="Link zum korrekten Repo">lucasvog/dvbfast</a>. Der Account <a href="https://github.com/dvbfast" title="Link zum Zweitaccount">dvbfast</a> ist nur zum Hosten der Seite zuständig für die schönere Domain. Diese Software ist **keine** offizielle Anwendung der Dresdner Verkehrsbetriebe oder der VVO. Es werden lediglich die bereitgestellten öffentlichen Schnittstellen genutzt.
 
