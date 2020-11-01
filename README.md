@@ -6,16 +6,8 @@ Die schnellste Möglichkeit, Abfahrtsinformationen in Dresden zu erhalten.
 
 *The fastest way to get your departure infos in Dresden*
 <br>
-<style>
-.openButton{
-background-color:#ffc107;color:black;padding:12px;overflow:hidden;border-radius:5px; font-size:20px
-}
-.openButton:hover{
-    background-color:#ffd54f!important;
-}
-</style>
-<a class="openButton" href="https://dvbfast.github.io" target="_blank" style="background-color:#ffc107;color:black;padding:12px;overflow:hidden;border-radius:5px; font-size:20px">Öffnen</a>
- </div>
+<h2><a class="openButton" href="https://dvbfast.github.io" target="_blank" style="background-color:#ffc107;color:black;padding:12px;overflow:hidden;border-radius:5px; font-size:20px">Webseite öffnen</a>
+ </div></h2>
 <br>
 <br>
 
