@@ -654,6 +654,8 @@ function generateProgressGradientString(progress) {
     var html = "background: linear-gradient(90deg, #ff8f00 0%, #f57c00 " + progressInPercent + "%, #ff8f00 " + progressInPercent + "%);";
     return html;
 }
+function initSearch() {
+}
 var departureEndpoint = 'https://webapi.vvo-online.de/dm';
 function getDeparturesOfStation(station) {
     return __awaiter(this, void 0, void 0, function () {
