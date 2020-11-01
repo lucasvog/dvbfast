@@ -45,7 +45,10 @@ async function getCloseStations(): Promise<rawDataStationElement[]> {
                 showPush("Fehler: Positionserkennung aktuell nicht verfügbar.", 10000);
                 return;
             }
-            showPush("Fehler: "+e.code, 5000);
+            if(e.code!==3){
+                showPush("Fehler: "+e.code, 5000);
+            }
+            
             return;
         }
         if (position == null) {
