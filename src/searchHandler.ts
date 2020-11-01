@@ -17,7 +17,7 @@ function initSearch(){
     //@ts-ignore
     const instances = M.Autocomplete.init(elems, {
         data: optionsData,
-        minLength:1,
+        minLength:2,
         onAutocomplete:handleResult,
         sortFunction : sortResultFunction
     });
@@ -31,11 +31,9 @@ function initSearch(){
 function sortResultFunction(a:string,b:string,inputString:string){
     let extra = 0;
     if(!inputString.startsWith("D")){
-        extra =-5000;
-    }else{
-        extra =5000;
+        return 0;
     }
-    return a.indexOf(inputString) - b.indexOf(inputString)+extra;
+    return (a.indexOf(inputString) - b.indexOf(inputString))+extra;
 }
 
 /**

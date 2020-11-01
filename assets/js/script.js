@@ -672,7 +672,7 @@ function initSearch() {
     }
     var instances = M.Autocomplete.init(elems, {
         data: optionsData,
-        minLength: 1,
+        minLength: 2,
         onAutocomplete: handleResult,
         sortFunction: sortResultFunction
     });
@@ -680,12 +680,9 @@ function initSearch() {
 function sortResultFunction(a, b, inputString) {
     var extra = 0;
     if (!inputString.startsWith("D")) {
-        extra = -5000;
+        return 0;
     }
-    else {
-        extra = 5000;
-    }
-    return a.indexOf(inputString) - b.indexOf(inputString) + extra;
+    return (a.indexOf(inputString) - b.indexOf(inputString)) + extra;
 }
 function handleResult(query) {
     return __awaiter(this, void 0, void 0, function () {
