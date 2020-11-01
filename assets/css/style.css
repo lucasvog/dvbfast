@@ -200,6 +200,18 @@ html,body,.container{
 .centerText{
   text-align: center;
 }
+
+.cancelIcon{
+  margin-right: 3px;
+  vertical-align: -5%;
+  color:rgb(143, 1, 1);
+}
+
+
+
+
+
+
 .spinning{
   -webkit-animation-name: spin;
   -webkit-animation-duration: 2000ms;
@@ -291,6 +303,24 @@ summary{
   animation: octocat-wave 560ms ease-in-out
 }
 
+.pulseIcon {
+  animation: pulse-animation 2s infinite;
+}
+
+@keyframes pulse-animation {
+  0% {
+    color: rgba(143, 1, 1,0.5);
+  }
+  50% {
+    color: rgba(143, 1, 1,1);
+  }
+  100% {
+    color: rgba(143, 1, 1,0.5);
+  }
+
+}
+
+
 @keyframes octocat-wave {
 
   0%,
@@ -342,6 +372,9 @@ summary{
     color:rgb(232, 62, 62);
   }
   .delayedText{
+    color:rgb(232, 62, 62);
+  }
+  .cancelIcon{
     color:rgb(232, 62, 62);
   }
   #boxcontainer > div > .card{

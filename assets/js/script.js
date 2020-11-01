@@ -219,7 +219,9 @@ function getCloseStations() {
                                     showPush("Fehler: Positionserkennung aktuell nicht verfügbar.", 10000);
                                     return [2];
                                 }
-                                showPush("Fehler: " + e_1.code, 5000);
+                                if (e_1.code !== 3) {
+                                    showPush("Fehler: " + e_1.code, 5000);
+                                }
                                 return [2];
                             case 4:
                                 if (position == null) {
@@ -331,6 +333,9 @@ function generateDepartureHTML(departure) {
         steig = "";
     }
     var departureStatus = calculateDepartureStatus(departure);
+    if (departureStatus === undefined || departureStatus === "undefined") {
+        departureStatus = "Unbekannter Zustand";
+    }
     var html = "\n    <div class=\"tripContainer verticalContainer\">\n      <div class=\"row noMargin\">\n      <div class=\"col s2 m2 l2\">\n        <div class=\"tripIcon verticalMiddle " + iconClass + "\">\n          " + lineNumber + "\n        </div>\n      </div>\n      <div class=\"col s5 m5 l7 tripDestination\">\n        <h6 class=\"noMargin\">" + target + "</h6>\n        <small>" + steig + "</small>\n      </div>\n      <div class=\"col s5 m5 l3 tripDestination\">\n        <h6 class=\"noMargin\">" + time + " Uhr</h6>\n        <small>" + departureStatus + "</small>\n      </div>\n    </div>\n    </div>\n    ";
     return html;
 }
@@ -378,6 +383,7 @@ function calculateLineClassName(departure) {
     return returnClassValue;
 }
 function calculateDepartureStatus(departure) {
+    console.log(departure);
     var onTime = '<i class="material-icons-smaller onTime">check_circle</i>pünktlich';
     var unknown = '';
     var delayStart = '<i class="material-icons-smaller delayed">warning</i><span class="delayedText">';
@@ -385,11 +391,15 @@ function calculateDepartureStatus(departure) {
     var toEarlyStart = '<i class="material-icons-smaller onTime">warning</i><span class="delayedText">';
     var unit = " min.";
     var sheduledIcon = '<i class="material-icons-smaller delayIcon">wysiwygy</i>';
+    var canceledHTML = '<i class="material-icons-smaller cancelIcon">cancel</i><span class="delayedText">Fällt aus</span>';
     if (departure.State == undefined) {
         return unknown;
     }
     if (departure.State === "InTime") {
         return onTime;
+    }
+    if (departure.State === "Cancelled") {
+        return canceledHTML;
     }
     var realTime = generateUTCStringFromUnparsedTimestamp(departure.RealTime || departure.ScheduledTime);
     var scheduledTime = generateUTCStringFromUnparsedTimestamp(departure.ScheduledTime);

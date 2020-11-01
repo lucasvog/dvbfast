@@ -69,7 +69,10 @@ function generateDepartureHTML(departure: Departure): string {
     } catch (e) {
         steig = ""
     }
-    const departureStatus = calculateDepartureStatus(departure);
+    let departureStatus = calculateDepartureStatus(departure);
+    if(departureStatus===undefined||departureStatus==="undefined"){
+        departureStatus = "Unbekannter Zustand";
+    }
     let html = `
     <div class="tripContainer verticalContainer">
       <div class="row noMargin">
@@ -148,6 +151,7 @@ function calculateLineClassName(departure: Departure): string {
  * @param departure departure-Element from the VVO-API
  */
 function calculateDepartureStatus(departure: Departure) {
+    console.log(departure);
     const onTime = '<i class="material-icons-smaller onTime">check_circle</i>pünktlich';
     const unknown = '';
     const delayStart = '<i class="material-icons-smaller delayed">warning</i><span class="delayedText">';
@@ -155,11 +159,15 @@ function calculateDepartureStatus(departure: Departure) {
     const toEarlyStart = '<i class="material-icons-smaller onTime">warning</i><span class="delayedText">';
     const unit = " min."
     const sheduledIcon = '<i class="material-icons-smaller delayIcon">wysiwygy</i>'
+    const canceledHTML = '<i class="material-icons-smaller cancelIcon">cancel</i><span class="delayedText">Fällt aus</span>'
     if (departure.State == undefined) {
         return unknown;
     }
     if (departure.State === "InTime") {
         return onTime;
+    }
+    if(departure.State === "Cancelled"){
+return canceledHTML;
     }
     const realTime = generateUTCStringFromUnparsedTimestamp(departure.RealTime || departure.ScheduledTime);
     const scheduledTime = generateUTCStringFromUnparsedTimestamp(departure.ScheduledTime);
