@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+
+</head>
+
+<body>
+    <h2>Suche nach der VVO-Information einer Station. </h2>
+    <p>Dieses Schript stellt die Informationen einer Suche nach einer Haltestelle des VVO dar.</p>
+    <p>Die zu vergleichenden Daten sind unter <a href="https://github.com/lucasvog/dvbfast">https://github.com/lucasvog/dvbfast</a> bei assets > data einsehbar.</p>
+    
+    <br><br>
+    <input type="text" id="searchInput">
+    <br><br>
+
+    <button onclick="search()">Suche</button>
+
+    <br><br>
+    <pre id="target">
+
+    </pre>
+    <script src="../assets/js/rawdata.js"></script>
+    
+    <script>
+    
+    async function search(){
+        var searchQuery = document.getElementById("searchInput").value;
+        result = await getInfos(searchQuery);
+        var target = document.getElementById("target");
+        target.innerHTML = JSON.stringify(result, null, 4);
+    }
+        
+
+        async function getInfos(nameOfStop) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    var data = await postData("https://webapi.vvo-online.de/tr/pointfinder", { query: nameOfStop, stopsOnly: true, regionalOnly: true })
+                    if (data.PointStatus == undefined) {
+                        console.error("ERROR");
+                        console.log(nameOfStop, data);
+                        resolve(null)
+                        return;
+                    }
+
+                    if (data.Points == undefined || data.Points.length < 1) {
+                        console.error("Number ERROR");
+                        console.log(nameOfStop, data);
+                        resolve(null)
+                        return;
+                    }
+                    var points = data.Points;
+                   
+                    resolve(points);
+                } catch (e) {
+                    console.error(e);
+                    resolve(null)
+                    return;
+                }
+            });
+}
+        // getNumber("Bautzner Straße");
+        // getNumber("Hygiene");
+        // getNumber("Bautzner");
+        async function postData(url = '', data = {}) {
+            return new Promise(async (resolve, reject) => {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    mode: 'cors',
+                    cache: 'no-cache',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    redirect: 'follow',
+                    referrerPolicy: 'no-referrer',
+                    body: JSON.stringify(data)
+                });
+                resolve(response.json()); // parses JSON response into native JavaScript objects
+            });
+
+        }
+
+
+    </script>
+</body>
+
+</html>
