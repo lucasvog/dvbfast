@@ -1,5 +1,4 @@
-const departureLimit = 6;
-
+const departureLimit:number = 6;
 
 /**
  * Generates the HTML for a station including the departures
@@ -13,12 +12,16 @@ function generateBox(station: rawDataStationElement, departuresContainer: Depart
     let departuresHTML = "";
     let departures = departuresContainer.Departures;
     let thisDepartureLimit = 0;
+    let moreDeparturesHTML ="";
+    console.log(departuresContainer);
     if(departures===undefined){
         return "";
     }
     for (const departure of departures) {
         if (thisDepartureLimit < departureLimit) {
             departuresHTML += generateDepartureHTML(departure);
+        }else{
+            moreDeparturesHTML+=generateDepartureHTML(departure);
         }
         thisDepartureLimit += 1;
     }
@@ -57,6 +60,8 @@ function generateTitleHTML(station: rawDataStationElement,isSearchResult=false) 
     return html;
 }
 
+
+const departureMinutesCutoffPointInMinutes =90;
 /**
  * Generates all departures as HTML
  * @param departure departure-element from the VVO API
@@ -67,6 +72,8 @@ function generateDepartureHTML(departure: Departure): string {
     const target = departure.Direction;
     const unparsedTimeStamp = departure.RealTime || departure.ScheduledTime;
     const time = generateClockTimeStringFromUnparsedUTCTimestamp(unparsedTimeStamp);
+    const timeDifference = calculateRemainingTimeInMinutes(departure);
+    
     let steig = "";
     const iconClass = calculateLineClassName(departure);
     try {
@@ -78,6 +85,20 @@ function generateDepartureHTML(departure: Departure): string {
     if(departureStatus===undefined||departureStatus==="undefined"){
         departureStatus = "Unbekannter Zustand";
     }
+
+    let timeDifferenceString = "";
+    if(timeDifference>0){
+        if(timeDifference<departureMinutesCutoffPointInMinutes){
+        timeDifferenceString="in "+timeDifference+" Min."
+        }else{
+            var hours = Math.floor(timeDifference/60);
+            timeDifferenceString="in "+hours+" St."
+        }
+    }else{
+        timeDifferenceString="Jetzt";
+  
+    }
+
     let html = `
     <div class="tripContainer verticalContainer">
       <div class="row noMargin">
@@ -91,7 +112,7 @@ function generateDepartureHTML(departure: Departure): string {
         <small>${steig}</small>
       </div>
       <div class="col s5 m5 l3 tripDestination">
-        <h6 class="noMargin">${time} Uhr</h6>
+        <h6 class="noMargin">${timeDifferenceString}</h6>
         <small>${departureStatus}</small>
       </div>
     </div>
@@ -156,25 +177,36 @@ function calculateLineClassName(departure: Departure): string {
  * @param departure departure-Element from the VVO-API
  */
 function calculateDepartureStatus(departure: Departure) {
-    const onTime = '<i class="material-icons-smaller onTime">check_circle</i>pünktlich';
-    const unknown = '';
+    const onTime = '<i class="material-icons-smaller onTime">check_circle</i> '; //pünktlich
+    
     const delayStart = '<i class="material-icons-smaller delayed">warning</i><span class="delayedText">';
     const delayEnd = "</span>"
     const toEarlyStart = '<i class="material-icons-smaller onTime">warning</i><span class="delayedText">';
-    const unit = " min."
-    const sheduledIcon = '<i class="material-icons-smaller delayIcon">wysiwygy</i>'
+    const unit = " min.";
+    const clockTime =" Uhr";
+    const sheduledIconDelayed = '<i class="material-icons-smaller delayIcon">wysiwygy</i>'
     const canceledHTML = '<i class="material-icons-smaller cancelIcon">cancel</i><span class="delayedText">Fällt aus</span>'
+    const realTime = generateUTCStringFromUnparsedTimestamp(departure.RealTime || departure.ScheduledTime);
+    
+    const scheduledTime = generateUTCStringFromUnparsedTimestamp(departure.ScheduledTime);
+    const sheduledTimeString = generateHoursAndMinutesFromUtcDateString(scheduledTime);
+    let unknown = "";
+    try{
+         unknown = generateClockTimeStringFromUnparsedUTCTimestamp(departure.RealTime || departure.ScheduledTime);
+        }catch(e){
+            return "";
+        }
     if (departure.State == undefined) {
-        return unknown;
+        return unknown+clockTime;
     }
     if (departure.State === "InTime") {
-        return onTime;
+        return onTime +" "+sheduledTimeString+clockTime;
     }
     if(departure.State === "Cancelled"){
 return canceledHTML;
     }
-    const realTime = generateUTCStringFromUnparsedTimestamp(departure.RealTime || departure.ScheduledTime);
-    const scheduledTime = generateUTCStringFromUnparsedTimestamp(departure.ScheduledTime);
+    
+    
     if (realTime == null || scheduledTime == null) {
         return unknown;
     }
@@ -182,11 +214,9 @@ return canceledHTML;
         let timeDifference = realTime - scheduledTime;
         let minutes = generateMinutesFromMilliseconds(timeDifference);
         if (timeDifference > 0) {//later
-            const sheduledTimeString = generateHoursAndMinutesFromUtcDateString(scheduledTime);
-            return delayStart + "+" + Math.abs(minutes).toString() + unit + " " + sheduledIcon + sheduledTimeString + " Uhr" + delayEnd;
+            return delayStart + "+" + Math.abs(minutes).toString()  + " " + sheduledIconDelayed + sheduledTimeString + clockTime + delayEnd;
         } else {//earlier
-            const sheduledTimeString = generateHoursAndMinutesFromUtcDateString(scheduledTime);
-            return toEarlyStart + "+" + Math.abs(minutes).toString() + unit + " " + sheduledIcon + sheduledTimeString + " Uhr" + delayEnd;
+            return toEarlyStart + "+" + Math.abs(minutes).toString()  + " " + sheduledIconDelayed + sheduledTimeString + clockTime + delayEnd;
         }
 
     }
@@ -272,4 +302,19 @@ function generateDistanceString(distance: number): string {
     } catch (e) {
         return ""
     }
+}
+
+/**
+ * Calculates remaining time in minutes from now to a departure
+ * @param departure delarture to calculate from
+ */
+function calculateRemainingTimeInMinutes(departure:Departure):number{
+    var now = Date.now();
+    var departureTime = generateUTCStringFromUnparsedTimestamp(departure.RealTime || departure.ScheduledTime);
+    var difference = departureTime-now;
+    var returnValue = Math.floor(difference/1000/60)-1;//the one minute is the last minute where the train is rolling in
+    if(returnValue<0){
+        return 0;
+    }
+    return returnValue;
 }

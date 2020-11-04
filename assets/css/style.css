@@ -164,6 +164,7 @@ html,body,.container{
   padding-right: 8px;
   margin: 0px auto;
   
+  
 }
 .schwebebahn{
   background-color: #95C11F;
@@ -186,9 +187,10 @@ html,body,.container{
   overflow: hidden;
   border-radius: 5px;
   padding:2px;
-  padding-left: 8px;
-  padding-right: 8px;
+  padding-left: 4px;
+  padding-right: 4px;
   margin: 0px auto;
+  font-size: 60%;
 }
 .taxi{
   background-color: #FEC500;
@@ -364,7 +366,7 @@ color:#ff8f00;
 .searchResultContainer{
   background-color: #e8e8e8!important;
 }
-.searchResultContainer.hidden {
+.hidden {
   display: none;
 }
 .searchResultContainer .card-action{
@@ -374,6 +376,36 @@ color:#ff8f00;
   display: inline-block;
 }
 
+
+.searchBar{
+  padding-right:1.5rem!important;
+  box-sizing: border-box!important;
+  
+}
+.searchContainer{
+  position: relative!important;
+}
+.clearSearchIcon{
+  position: absolute;
+  padding-right:0.75rem;
+  right:0px;
+  top:0px;
+  line-height: 3rem;
+  color:black;
+  cursor: pointer;
+}
+.showMoreDeparturesContainer{
+  text-align: center;
+  line-height: 40px;
+  cursor: pointer;
+}
+.showMoreDeparturesContainer:hover{
+  background-color: rgba(0,0,0,0.1);
+}
+
+.showMoreDepartures{
+  cursor: pointer;
+}
 
 
 
@@ -453,6 +485,13 @@ color:#ff8f00;
 .searchResultCard{
 background-color:#555555!important ;
 }
-
+.clearSearchIcon{
+  color:white;
 }
-
+.showMoreDepartures{
+  color:white;
+}
+.showMoreDeparturesContainer:hover{
+  background-color: rgba(255,255,255,0.1)!important;
+}
+}

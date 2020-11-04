@@ -1,10 +1,28 @@
 
-const intervallTimeInSeconds = 20; //time in seconds for the auto-refresh
+const intervallTimeInSeconds:number = 20; //time in seconds for the auto-refresh
 
-let isDisabled = false;
-let isCurrentlyLoading = false;
-let currentRefreshState = 0; 
-let initialLoad = true;//initial loading of the website
+let isDisabled:boolean = false;
+let isCurrentlyLoading:boolean = false;
+let currentRefreshState:number = 0; 
+let initialLoad:boolean = true;//initial loading of the website
+
+let lastRefeshTime:number = Date.now();
+
+
+/**
+ * This intervall checks, if the last update is more than intervallTimeInSeconds ago. 
+ * This is neccessary, because if the website is in the background, phones pause the JavaScript 
+ * After re-opening the website, the infos should be immediately refreshed.
+ */
+let lastRefreshIntervall = setInterval(()=>{
+    const now = Date.now();
+    const difference = now-lastRefeshTime;
+    if(lastRefeshTime!==0&&difference>intervallTimeInSeconds*1500){
+        lastRefeshTime = now;
+        currentRefreshState = 0;
+        refreshInfos();
+    }
+},300);
 
 /**
  * Intervall that handles the progress of the auto refresh.
@@ -52,6 +70,7 @@ async function refreshInfos() {
     setSpinnerState("on");
     await initData();
     setSpinnerState("off");
+    lastRefeshTime = Date.now();
     clearTimeout(thisTimeout);
     isCurrentlyLoading = false;
 }

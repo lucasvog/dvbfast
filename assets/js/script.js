@@ -34,6 +34,37 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var departureEndpoint = 'https://webapi.vvo-online.de/dm';
+function getDeparturesOfStation(station) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _this = this;
+        return __generator(this, function (_a) {
+            return [2, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
+                    var stationNumber, departures, e_1;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                stationNumber = station.num;
+                                _a.label = 1;
+                            case 1:
+                                _a.trys.push([1, 3, , 4]);
+                                return [4, post(departureEndpoint, { stopid: stationNumber, lim: 5 })];
+                            case 2:
+                                departures = _a.sent();
+                                resolve(departures);
+                                return [3, 4];
+                            case 3:
+                                e_1 = _a.sent();
+                                showPush("Fehler beim Abfragen der Informationen über eine Station.");
+                                reject(e_1);
+                                return [3, 4];
+                            case 4: return [2];
+                        }
+                    });
+                }); })];
+        });
+    });
+}
 var data = [];
 function initStationsData() {
     return __awaiter(this, void 0, void 0, function () {
@@ -197,7 +228,7 @@ function getCloseStations() {
         var _this = this;
         return __generator(this, function (_a) {
             return [2, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
-                    var position, e_1, closeStations;
+                    var position, e_2, closeStations;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
@@ -210,18 +241,18 @@ function getCloseStations() {
                                 position = _a.sent();
                                 return [3, 4];
                             case 3:
-                                e_1 = _a.sent();
-                                console.log(e_1);
-                                if (e_1.code == 1) {
+                                e_2 = _a.sent();
+                                console.log(e_2);
+                                if (e_2.code == 1) {
                                     showPush("Fehler: Berechtigung nicht erteilt. Bitte lassen Sie die Standorterkennung zu, damit Stationen in der Nähe erkannt werden können. ", 10000);
                                     return [2];
                                 }
-                                if (e_1.code == 2) {
+                                if (e_2.code == 2) {
                                     showPush("Fehler: Positionserkennung aktuell nicht verfügbar.", 10000);
                                     return [2];
                                 }
-                                if (e_1.code !== 3) {
-                                    showPush("Fehler: " + e_1.code, 5000);
+                                if (e_2.code !== 3) {
+                                    showPush("Fehler: " + e_2.code, 5000);
                                 }
                                 return [2];
                             case 4:
@@ -301,6 +332,8 @@ function generateBox(station, departuresContainer, isSearchResult) {
     var departuresHTML = "";
     var departures = departuresContainer.Departures;
     var thisDepartureLimit = 0;
+    var moreDeparturesHTML = "";
+    console.log(departuresContainer);
     if (departures === undefined) {
         return "";
     }
@@ -308,6 +341,9 @@ function generateBox(station, departuresContainer, isSearchResult) {
         var departure = departures_1[_i];
         if (thisDepartureLimit < departureLimit) {
             departuresHTML += generateDepartureHTML(departure);
+        }
+        else {
+            moreDeparturesHTML += generateDepartureHTML(departure);
         }
         thisDepartureLimit += 1;
     }
@@ -325,11 +361,13 @@ function generateTitleHTML(station, isSearchResult) {
     html += "</div>\n            </div>\n            </div>";
     return html;
 }
+var departureMinutesCutoffPointInMinutes = 90;
 function generateDepartureHTML(departure) {
     var lineNumber = departure.LineName;
     var target = departure.Direction;
     var unparsedTimeStamp = departure.RealTime || departure.ScheduledTime;
     var time = generateClockTimeStringFromUnparsedUTCTimestamp(unparsedTimeStamp);
+    var timeDifference = calculateRemainingTimeInMinutes(departure);
     var steig = "";
     var iconClass = calculateLineClassName(departure);
     try {
@@ -342,7 +380,20 @@ function generateDepartureHTML(departure) {
     if (departureStatus === undefined || departureStatus === "undefined") {
         departureStatus = "Unbekannter Zustand";
     }
-    var html = "\n    <div class=\"tripContainer verticalContainer\">\n      <div class=\"row noMargin\">\n      <div class=\"col s2 m2 l2\">\n        <div class=\"tripIcon verticalMiddle " + iconClass + "\">\n          " + lineNumber + "\n        </div>\n      </div>\n      <div class=\"col s5 m5 l7 tripDestination\">\n        <h6 class=\"noMargin\">" + target + "</h6>\n        <small>" + steig + "</small>\n      </div>\n      <div class=\"col s5 m5 l3 tripDestination\">\n        <h6 class=\"noMargin\">" + time + " Uhr</h6>\n        <small>" + departureStatus + "</small>\n      </div>\n    </div>\n    </div>\n    ";
+    var timeDifferenceString = "";
+    if (timeDifference > 0) {
+        if (timeDifference < departureMinutesCutoffPointInMinutes) {
+            timeDifferenceString = "in " + timeDifference + " Min.";
+        }
+        else {
+            var hours = Math.floor(timeDifference / 60);
+            timeDifferenceString = "in " + hours + " St.";
+        }
+    }
+    else {
+        timeDifferenceString = "Jetzt";
+    }
+    var html = "\n    <div class=\"tripContainer verticalContainer\">\n      <div class=\"row noMargin\">\n      <div class=\"col s2 m2 l2\">\n        <div class=\"tripIcon verticalMiddle " + iconClass + "\">\n          " + lineNumber + "\n        </div>\n      </div>\n      <div class=\"col s5 m5 l7 tripDestination\">\n        <h6 class=\"noMargin\">" + target + "</h6>\n        <small>" + steig + "</small>\n      </div>\n      <div class=\"col s5 m5 l3 tripDestination\">\n        <h6 class=\"noMargin\">" + timeDifferenceString + "</h6>\n        <small>" + departureStatus + "</small>\n      </div>\n    </div>\n    </div>\n    ";
     return html;
 }
 function calculateLineClassName(departure) {
@@ -389,25 +440,33 @@ function calculateLineClassName(departure) {
     return returnClassValue;
 }
 function calculateDepartureStatus(departure) {
-    var onTime = '<i class="material-icons-smaller onTime">check_circle</i>pünktlich';
-    var unknown = '';
+    var onTime = '<i class="material-icons-smaller onTime">check_circle</i> ';
     var delayStart = '<i class="material-icons-smaller delayed">warning</i><span class="delayedText">';
     var delayEnd = "</span>";
     var toEarlyStart = '<i class="material-icons-smaller onTime">warning</i><span class="delayedText">';
     var unit = " min.";
-    var sheduledIcon = '<i class="material-icons-smaller delayIcon">wysiwygy</i>';
+    var clockTime = " Uhr";
+    var sheduledIconDelayed = '<i class="material-icons-smaller delayIcon">wysiwygy</i>';
     var canceledHTML = '<i class="material-icons-smaller cancelIcon">cancel</i><span class="delayedText">Fällt aus</span>';
+    var realTime = generateUTCStringFromUnparsedTimestamp(departure.RealTime || departure.ScheduledTime);
+    var scheduledTime = generateUTCStringFromUnparsedTimestamp(departure.ScheduledTime);
+    var sheduledTimeString = generateHoursAndMinutesFromUtcDateString(scheduledTime);
+    var unknown = "";
+    try {
+        unknown = generateClockTimeStringFromUnparsedUTCTimestamp(departure.RealTime || departure.ScheduledTime);
+    }
+    catch (e) {
+        return "";
+    }
     if (departure.State == undefined) {
-        return unknown;
+        return unknown + clockTime;
     }
     if (departure.State === "InTime") {
-        return onTime;
+        return onTime + " " + sheduledTimeString + clockTime;
     }
     if (departure.State === "Cancelled") {
         return canceledHTML;
     }
-    var realTime = generateUTCStringFromUnparsedTimestamp(departure.RealTime || departure.ScheduledTime);
-    var scheduledTime = generateUTCStringFromUnparsedTimestamp(departure.ScheduledTime);
     if (realTime == null || scheduledTime == null) {
         return unknown;
     }
@@ -415,12 +474,10 @@ function calculateDepartureStatus(departure) {
         var timeDifference = realTime - scheduledTime;
         var minutes = generateMinutesFromMilliseconds(timeDifference);
         if (timeDifference > 0) {
-            var sheduledTimeString = generateHoursAndMinutesFromUtcDateString(scheduledTime);
-            return delayStart + "+" + Math.abs(minutes).toString() + unit + " " + sheduledIcon + sheduledTimeString + " Uhr" + delayEnd;
+            return delayStart + "+" + Math.abs(minutes).toString() + " " + sheduledIconDelayed + sheduledTimeString + clockTime + delayEnd;
         }
         else {
-            var sheduledTimeString = generateHoursAndMinutesFromUtcDateString(scheduledTime);
-            return toEarlyStart + "+" + Math.abs(minutes).toString() + unit + " " + sheduledIcon + sheduledTimeString + " Uhr" + delayEnd;
+            return toEarlyStart + "+" + Math.abs(minutes).toString() + " " + sheduledIconDelayed + sheduledTimeString + clockTime + delayEnd;
         }
     }
 }
@@ -478,6 +535,16 @@ function generateDistanceString(distance) {
         return "";
     }
 }
+function calculateRemainingTimeInMinutes(departure) {
+    var now = Date.now();
+    var departureTime = generateUTCStringFromUnparsedTimestamp(departure.RealTime || departure.ScheduledTime);
+    var difference = departureTime - now;
+    var returnValue = Math.floor(difference / 1000 / 60) - 1;
+    if (returnValue < 0) {
+        return 0;
+    }
+    return returnValue;
+}
 var options = {
     enableHighAccuracy: true,
     timeout: 5000,
@@ -516,7 +583,7 @@ function post(url, data) {
     if (url === void 0) { url = ''; }
     if (data === void 0) { data = {}; }
     return __awaiter(this, void 0, void 0, function () {
-        var response, e_2;
+        var response, e_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -535,7 +602,7 @@ function post(url, data) {
                     response = _a.sent();
                     return [2, response.json()];
                 case 2:
-                    e_2 = _a.sent();
+                    e_3 = _a.sent();
                     return [2, null];
                 case 3: return [2];
             }
@@ -578,6 +645,16 @@ var isDisabled = false;
 var isCurrentlyLoading = false;
 var currentRefreshState = 0;
 var initialLoad = true;
+var lastRefeshTime = Date.now();
+var lastRefreshIntervall = setInterval(function () {
+    var now = Date.now();
+    var difference = now - lastRefeshTime;
+    if (lastRefeshTime !== 0 && difference > intervallTimeInSeconds * 1500) {
+        lastRefeshTime = now;
+        currentRefreshState = 0;
+        refreshInfos();
+    }
+}, 300);
 var refreshIntervall = setInterval(function () {
     if (getIfAutorefreshIsEnabled() == false) {
         isDisabled = true;
@@ -621,6 +698,7 @@ function refreshInfos() {
                 case 1:
                     _a.sent();
                     setSpinnerState("off");
+                    lastRefeshTime = Date.now();
                     clearTimeout(thisTimeout);
                     isCurrentlyLoading = false;
                     return [2];
@@ -754,35 +832,31 @@ function setSearchContainerVisibility(status) {
         searchContainer.classList.add("hidden");
     }
 }
-var departureEndpoint = 'https://webapi.vvo-online.de/dm';
-function getDeparturesOfStation(station) {
-    return __awaiter(this, void 0, void 0, function () {
-        var _this = this;
-        return __generator(this, function (_a) {
-            return [2, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
-                    var stationNumber, departures, e_3;
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0:
-                                stationNumber = station.num;
-                                _a.label = 1;
-                            case 1:
-                                _a.trys.push([1, 3, , 4]);
-                                return [4, post(departureEndpoint, { stopid: stationNumber, lim: 5 })];
-                            case 2:
-                                departures = _a.sent();
-                                resolve(departures);
-                                return [3, 4];
-                            case 3:
-                                e_3 = _a.sent();
-                                showPush("Fehler beim Abfragen der Informationen über eine Station.");
-                                reject(e_3);
-                                return [3, 4];
-                            case 4: return [2];
-                        }
-                    });
-                }); })];
-        });
-    });
+function updateClearButtonVisibility() {
+    var searchValue = getSearchBarValue();
+    if (searchValue !== "") {
+        setClearStatus("visible");
+    }
+    else {
+        setClearStatus("hidden");
+    }
+}
+function setClearStatus(status) {
+    var clearButton = document.getElementById("clearSearchButton");
+    if (status == "hidden") {
+        clearButton.classList.add("hidden");
+    }
+    else {
+        clearButton.classList.remove("hidden");
+    }
+}
+function getSearchBarValue() {
+    var searchbar = document.getElementById("autocomplete-input");
+    return searchbar.value;
+}
+function clearSearchBar() {
+    var searchbar = document.getElementById("autocomplete-input");
+    searchbar.value = "";
+    setClearStatus("hidden");
 }
 //# sourceMappingURL=script.js.map

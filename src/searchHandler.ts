@@ -115,3 +115,45 @@ function setSearchContainerVisibility(status:"visible"|"hidden"){
         searchContainer.classList.add("hidden");
     }
 }
+
+/**
+ * Checks if the search bar is emty
+ */
+function updateClearButtonVisibility(){
+    var searchValue = getSearchBarValue();
+    if(searchValue!==""){
+        setClearStatus("visible");
+    }else{
+        setClearStatus("hidden");
+    }
+}
+
+/**
+ * Sets the status of the clear searchbar button
+ * @param status status of the button
+ */
+function setClearStatus (status:"hidden"|"visible"){
+    var clearButton = document.getElementById("clearSearchButton");
+    if(status=="hidden"){
+        clearButton.classList.add("hidden");
+    }else{
+        clearButton.classList.remove("hidden");
+    }
+}
+
+/**
+ * Gets the contents of the search bar
+ */
+function getSearchBarValue():string{
+    var searchbar:any = document.getElementById("autocomplete-input");
+    return searchbar.value;
+}
+
+/**
+ * Clears the search bar
+ */
+function clearSearchBar(){
+    var searchbar:any = document.getElementById("autocomplete-input");
+    searchbar.value="";
+    setClearStatus("hidden");
+}
