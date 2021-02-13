@@ -93,7 +93,8 @@ html,body,.container{
   overflow: hidden;
 }
 .overflowHorizontalScroll{
-  overflow-x: scroll;
+  overflow: hidden;
+  /* overflow-x: scroll; */
 }
 
 .tripIcon{
